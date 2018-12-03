@@ -28,23 +28,36 @@ function Grant( population, environment, recommendedRep, maxFunding ) {
 	this.description = this.getDescription();
 
 	game.grantsAvailable.push(this)
-	console.log('New grant generated.\nStart date set to ' + this.startDate.toLocaleDateString() 
-		+ '\nProposal deadline set to ' + this.propDeadline.toLocaleDateString());
+	console.log(this);
 }
 
 
 Grant.prototype = {
 	constructor: Grant,	
 
+	apply: function() {
+	/* Generates a project with funding amount and a deadline. Funding generated 
+	 * based on the recommended reputation of the project and the reputation of
+	 * the player. Removes the current grant from the global list: grantsAvailable
+	 */
+	 	var funding = this.calcProjectFunding();
+	 	var project = new Project(this.description, this.population, this.environment, funding);
+	 	var grantIndex = game.grantsAvailable.indexOf(this);
+	 	game.grantsAvailable.splice(grantIndex, 1);
+		return project;
+	},
+
 	calcProjectFunding: function( noise=.2 ) {
 	/* Calculates funding offered for the grant based on max/min funding,
 	 * recommended rep, and the player's rep - linearly w some noise added.
 	 */
-		var ratio = playerRep / game.totalReputation;
 		var fundingRange = this.maxFunding - this.minFunding;
-		var funding = this.fundingRange * ratio + this.minFunding;
+		var repRatio = game.totalReputation / this.recommendedRep;
+		var funding = fundingRange * repRatio + this.minFunding;
 		funding += fundingRange * noise * (Math.random() - 0.5);
-		return min(funding, this.maxFunding)
+		funding = Math.min(funding, this.maxFunding);
+		funding = Math.round(funding * 100) / 100;
+		return funding;
 	},
 
 	genDeadline: function( duration=-1 ) {
@@ -54,17 +67,6 @@ Grant.prototype = {
 		var deadline = new Date(this.startDate.toDateString());
 		deadline.setTime(deadline.getTime() + (duration * 24 * 60 * 60 * 1000));
 		return deadline;
-	},
-
-	genProject: function() {
-	/* Generates a project with funding amount and a deadline. Funding generated 
-	 * based on the recommended reputation of the project and the reputation of
-	 * the player.
-	 */
-	 	var funding = this.calcProjectFunding()
-	 	// var project = new Project(this.)
-	 	// Project( title, funding, population, environment)
-		return project;
 	},
 
 	getDescription: function() {
@@ -95,15 +97,20 @@ Population.prototype = {
 
 
 
-function Project( title, description, population, environment, funding, exposure=1, duration=30 ) {
-	this.title = 'Project #' + String(this.getTotalProjectCount());
-	this.description = description;
+function Project( description, population, environment, funding, exposure=1, duration=-1 ) {
 	this.population = population;			
 	this.environment = environment;
 	this.funding = funding;					// amount of funding awarded for project
 	this.exposure = exposure;				// multiplies the influence project results have on reputation 
 	
+
+	this.description = description;
+	this.title = 'Project #' + String(this.getTotalProjectCount());
+	this.startDate = new Date(game.date.toLocaleDateString());
+	this.deadline = this.genDeadline(duration);
+
 	game.projectsOngoing.push(this);
+	console.log(this);
 }
 
 
@@ -117,6 +124,15 @@ Project.prototype = {
 	 */
 	 	// use 
 	 	return
+	},
+
+	genDeadline: function( duration=-1 ) {
+		if (duration == -1) {
+			duration = Math.random() * 15 + 15;
+		}
+		var deadline = new Date(this.startDate.toDateString());
+		deadline.setTime(deadline.getTime() + (duration * 24 * 60 * 60 * 1000));
+		return deadline;
 	},
 
 	getTotalProjectCount: function() {

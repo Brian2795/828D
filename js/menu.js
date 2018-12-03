@@ -188,7 +188,7 @@ var menuState = {
     },
 
 
-	genePerformanceSummary: function(levelResult) {
+	genPerformanceSummary: function(levelResult) {
 		var popMean = levelResult.popMean;
 		var sampleMean = levelResult.sampleMean;
 		var popStDev = levelResult.popStDev;
@@ -212,11 +212,11 @@ var menuState = {
 		var details = grant.description + '\nDifficulty: ' + grant.recommendedRep
 			+ '\nAvailable Funding: ' + grant.maxFunding 
 			+ '\nProposal Deadline: ' + grant.propDeadline.toDateString();
-		// var callback = function () {  };
+		var callback = function() { grant.apply(); };
 
 		var titleText = game.add.text(xLoc, yLocTitle, grant.providor, style.navitem.default);
 		var detailText = game.add.text(xLoc, yLocDetails, details, style.navitem.subtitle);
-		// this.createTextButton(titleText, grant.providor, 'Submit Proposal', callback);
+		this.createTextButton(titleText, grant.providor, 'Submit Proposal', callback);
 
 		this.optionCount ++;
 		this.menuGroup.add(titleText);
@@ -229,7 +229,7 @@ var menuState = {
 		var yLocTitle = (this.optionCount*totalHeight) + padding;
 		var yLocDetails = yLocTitle + titleHeight;
 		var details = project.description + "\nExposure: " + project.exposure 
-			+ '\nPaper Deadline: ' + project.deadline;
+			+ '\nPaper Deadline: ' + project.deadline.toDateString();
 		var callback = function () { game.state.start('play', false, false, project); };
 
 		var titleText = game.add.text(xLoc, yLocTitle, project.title, style.navitem.default);
@@ -313,7 +313,6 @@ var menuState = {
 
 
 
-
 	genProjects: function( numProjects=3 ) {
 		var env1 = game.environments['desert'];
 		var env2 = game.environments['space'];
@@ -324,9 +323,9 @@ var menuState = {
 		var pop3 = game.populations['carrot'];
 
 		// Project( name, funding, population, recommendedRep )
-		var p1 = new Project('Diamond Mine', '', pop1, env1, 10000, 20);
-		var p2 = new Project('Tropics', '', pop2, env1, 20000, 60);
-		var p3 = new Project('Arctic', '', pop3, env1, 50000, 100);
+		var p1 = new Project('', pop1, env1, 10000, 20);
+		var p2 = new Project('', pop2, env1, 20000, 60);
+		var p3 = new Project('', pop3, env1, 50000, 100);
 
 		projects = [p1,p2,p3];
 		return projects;
@@ -359,7 +358,7 @@ var menuState = {
 			environment = game.environments[key];
 		};
 		
-		var grant = new Grant(population, environment, 10, 10000);
+		var grant = new Grant(population, environment, 30, 10000);
 		console.log(grant.getDescription());
 
 		// Grant( population, environment, recommendedRep, maxFunding, duration=30 )
