@@ -62,8 +62,6 @@ var playState = {
                         "Now, collect some samples that we can conclude the statistical significance.", "The previously collected sample has the mean:", ""],
                         2:["Hmmm you proved the statistical significance!","We can finally publish the paper!", ""]
                     }};
-        // grant creation test code
-        new Grant(14, 20000);
     },
 
 

@@ -327,22 +327,25 @@ var menuState = {
 	 */
 		if (!population) {
 			var popKeys = Object.keys(game.populations);
-			var key = popKeys[Math.random() * popKeys.length];
+			var key = popKeys[Math.floor(Math.random() * popKeys.length)];
 			population = game.populations[key];
 		};
 
 		if (!environment) {
 			var envKeys = Object.keys(game.environments);
-			var key = envKeys[Math.random() * envKeys.length];
+			var key = envKeys[Math.floor(Math.random() * envKeys.length)];
 			environment = game.environments[key];
 		};
 		
 		if (!verb) {
-			verb = game.titleVerbs[Math.random() * game.titleVerbs.length]
+			verb = game.titleVerbs[Math.floor(Math.random() * game.titleVerbs.length)];
 		};
 
+		var grant = new Grant(population, environment, verb, 10, 10000);
+		console.log(grant.getDescription());
+
 		// Grant( population, environment, recommendedRep, maxFunding, duration=30 )
-		return new Grant(population, environment, verb, 10, 10000);
+		return grant;
 	},
 
 
