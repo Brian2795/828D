@@ -22,7 +22,7 @@ var menuState = {
 
 		// Should put implement this logic in init() as a trigger on the input value
 		if (game.hasOwnProperty('levelResult')) {
-			var performanceSummary = this.generatePerformanceSummary(game.levelResult);
+			var performanceSummary = this.genPerformanceSummary(game.levelResult);
 			this.openPopupWindow(performanceSummary);
 			delete game['levelResult'];
 		}
@@ -188,17 +188,16 @@ var menuState = {
     },
 
 
-	generatePerformanceSummary: function(levelResult) {
+	genePerformanceSummary: function(levelResult) {
 		var popMean = levelResult.popMean;
 		var sampleMean = levelResult.sampleMean;
 		var popStDev = levelResult.popStDev;
 		var repChange = levelResult.reputationChange;
-		var summary = 
-		"Mission complete! Here's how you did: The population mean was "+popMean.toFixed(2)+" with "+
-		"a standard devation of "+popStDev.toFixed(2)+". The mean of your sample was "+
-		sampleMean.toFixed(2)+". Based on your performance, you've received a reputation change"+
-		" of "+(repChange < 0 ? "" : "+")+repChange.toFixed(2)+"%!\n"+
-		"~Press ESC to close~";
+		var summary = "Mission complete! Here's how you did: The population mean was "
+			+ popMean.toFixed(2)+" with " + "a standard devation of "+popStDev.toFixed(2)
+			+ ". The mean of your sample was " + sampleMean.toFixed(2) 
+			+ ". Based on your performance, you've received a reputation change of " 
+			+ (repChange < 0 ? "" : "+") + repChange.toFixed(2)+"%!\n" + "~Press ESC to close~";
 		return summary;
 	},
 
@@ -267,6 +266,7 @@ var menuState = {
 			"\"Keep it up! Collect high quality data to improve\nour reputation.\"", 
 			style.quote.default);
 	},
+
 
 	initStats: function() {
 		var repPercent = 100 * game.totalReputation / game.maxReputation;

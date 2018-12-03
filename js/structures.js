@@ -14,26 +14,32 @@ Environment.prototype = {
 
 
 
-function Grant( population, environment, recommendedRep, maxFunding, duration=30 ) {
+function Grant( population, environment, recommendedRep, maxFunding ) {
 	this.population = population;
 	this.environment = environment;
 	this.recommendedRep = recommendedRep;
 	this.maxFunding = maxFunding;
+	this.minFunding = maxFunding / 2;
 
 	this.verb = game.titleVerbs[Math.floor(Math.random() * game.titleVerbs.length)];
 	this.providor = game.grantProvidors[Math.floor(Math.random() * game.grantProvidors.length)];
 	this.startDate = new Date(game.date.toLocaleDateString());
-	this.propDeadline = this.genDeadline(duration);			// deadline to submit a proposal
+	this.propDeadline = this.genDeadline();			// deadline to submit a proposal
 	this.description = this.getDescription();
-	console.log('New grant generated.\nStart date set to ' + this.startDate.toLocaleDateString() +
-		'\nProposal deadline set to ' + this.propDeadline.toLocaleDateString());
+	console.log('New grant generated.\nStart date set to ' + this.startDate.toLocaleDateString() 
+		+ '\nProposal deadline set to ' + this.propDeadline.toLocaleDateString());
 }
 
 
 Grant.prototype = {
 	constructor: Grant,	
 
-	genDeadline: function( duration ) {
+
+
+	genDeadline: function( duration=-1 ) {
+		if (duration == -1) {
+			duration = Math.random() * 15 + 15;
+		}
 		var deadline = new Date(this.startDate.toDateString());
 		deadline.setTime(deadline.getTime() + (duration * 24 * 60 * 60 * 1000));
 		return deadline;
@@ -44,7 +50,7 @@ Grant.prototype = {
 	 * based on the recommended reputation of the project and the reputation of
 	 * the player.
 	 */
-
+	 	var funding = calc
 		return project;
 	},
 
@@ -77,13 +83,11 @@ Population.prototype = {
 
 
 function Project( title, funding, population, environment, exposure=1, duration=30 ) {
-	this.fundingAward = funding;
-	this.population = population;
+	this.population = population;			
 	this.environment = environment;
-	this.exposure = exposure;
+	this.funding = funding;					// amount of funding awarded for project
+	this.exposure = exposure;				// multiplies the influence project results have on reputation 
 	this.title = title;
-	
-	// reputation award 
 }
 
 
@@ -95,7 +99,7 @@ Project.prototype = {
 	 * required samples for a positive reputation result and the cost to process 
 	 * each sample.
 	 */
-
+	 	// use 
 	 	return
 	}
 }
