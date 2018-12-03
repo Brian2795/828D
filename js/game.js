@@ -29,5 +29,5 @@ game.grantProvidors = [
 ];
 game.environments = {};
 game.populations = {};
-
+game.started = false;
 game.state.start('boot');

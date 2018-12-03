@@ -7,8 +7,12 @@ var menuState = {
 			MISSIONS: 2
 		};
 		this.currentOptionState = this.optionStateEnum.MISSIONS;
-		this.genProjects();
-		this.genGrants();
+		
+		if(!game.started) { 
+			this.genProjects();
+			this.genGrants();
+			game.started = true;
+		}
 	},
 
 
