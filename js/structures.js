@@ -24,7 +24,7 @@ function Grant( population, environment, recommendedRep, maxFunding, providor='N
 	this.verb = game.titleVerbs[Math.floor(Math.random() * game.titleVerbs.length)];
 	this.startDate = new Date(game.date.toLocaleDateString());
 	this.propDeadline = this.genDeadline(duration);			// deadline to submit a proposal
-	this.title = this.getDescription();
+	this.description = this.getDescription();
 	console.log('New grant generated.\nStart date set to ' + this.startDate.toLocaleDateString() +
 		'\nProposal deadline set to ' + this.propDeadline.toLocaleDateString());
 }

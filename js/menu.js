@@ -133,7 +133,7 @@ var menuState = {
 		this.menuGroup.add(title);
 		
 		for (i = 0; i < game.grantsAvailable.length; i++) {
-			this.addMenuOption(game.grantsAvailable[i]);
+			this.addGrantCard(game.grantsAvailable[i]);
 		}
 		console.log("Toggled to grants.");
 		console.log(game.grantsAvailable);
@@ -206,44 +206,31 @@ var menuState = {
 
 
 /* TERTIARY HELPERS */
-	addMenuOption: function( project ) {
-		this.showMenuOption(project.title, project.description + "\nFunding: " 
-			+ project.fundingAward + "\nRecommended Reputation: " + project.recommendedRep,
-			function () { game.state.start('play', false, false, project); }
-		);
-	},
+	addGrantCard: function( grant, totalHeight=150, titleHeight=50, padding=50) {
+		var xLoc = game.width - 500; 
+		var yLocTitle = (this.optionCount*totalHeight) + padding;
+		var yLocDetails = yLocTitle + titleHeight;
+		var details = grant.description + '\nDifficulty: ' + grant.recommendedRep
+			+ '\nAvailable Funding: ' + grant.maxFunding 
+			+ '\nProposal Deadline: ' + grant.propDeadline.toDateString();
+		// var callback = function () {  };
 
+		var titleText = game.add.text(xLoc, yLocTitle, grant.providor, style.navitem.default);
+		var detailText = game.add.text(xLoc, yLocDetails, details, style.navitem.subtitle);
+		// this.createTextButton(titleText, callback);
 
-	showMenuOption: function(title, details, callback) {
-		var titleSubtitleVSpace = 50;
-		var menuOptionVSpace = 150;
-		var headPadding = 50;
-
-		var bigText = game.add.text(game.width - 500, (this.optionCount * menuOptionVSpace)+headPadding, title, style.navitem.default);
-		bigText.inputEnabled = true;
-		bigText.events.onInputUp.add(callback);
-		bigText.events.onInputOver.add(function (target) {
-		  target.setStyle(style.navitem.hover);
-		});
-		bigText.events.onInputOut.add(function (target) {
-		  target.setStyle(style.navitem.default);
-		});
-
-		var smallText = game.add.text(game.width - 500, (this.optionCount * menuOptionVSpace + titleSubtitleVSpace)+headPadding, details, style.navitem.subtitle);
 		this.optionCount ++;
-		this.menuGroup.add(bigText);
-		this.menuGroup.add(smallText);
+		this.menuGroup.add(titleText);
+		this.menuGroup.add(detailText);
 	},
-
-
 
 
 	addProjectCard: function( project, totalHeight=150, titleHeight=50, padding=50) {
 		var xLoc = game.width - 500; 
 		var yLocTitle = (this.optionCount*totalHeight) + padding;
 		var yLocDetails = yLocTitle + titleHeight;
-		var details = project.description + "\nFunding: " + project.fundingAward 
-			+ "\nExposure: " + project.exposure;
+		var details = project.description + "\nExposure: " + project.exposure 
+			+ '\nPaper Deadline: ' + project.deadline;
 		var callback = function () { game.state.start('play', false, false, project); };
 
 		var titleText = game.add.text(xLoc, yLocTitle, project.title, style.navitem.default);
