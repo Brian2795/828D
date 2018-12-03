@@ -20,6 +20,13 @@ game.grantsAvailable = [];
 
 
 game.titleVerbs = ['Processing', 'Studying', 'Observing', 'Evaluating', 'Investigating'];
+game.grantProvidors = [
+	'Nation Institute of Health', 
+	'DARPA', 
+	'Environmental Protection Agency', 
+	'National Science Foundation', 
+	'Agricurltural Research Service'
+];
 game.environments = {};
 game.populations = {};
 

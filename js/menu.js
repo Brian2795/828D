@@ -217,7 +217,7 @@ var menuState = {
 
 		var titleText = game.add.text(xLoc, yLocTitle, grant.providor, style.navitem.default);
 		var detailText = game.add.text(xLoc, yLocDetails, details, style.navitem.subtitle);
-		// this.createTextButton(titleText, callback);
+		// this.createTextButton(titleText, grant.providor, 'Submit Proposal', callback);
 
 		this.optionCount ++;
 		this.menuGroup.add(titleText);
@@ -235,7 +235,7 @@ var menuState = {
 
 		var titleText = game.add.text(xLoc, yLocTitle, project.title, style.navitem.default);
 		var detailText = game.add.text(xLoc, yLocDetails, details, style.navitem.subtitle);
-		this.createTextButton(titleText, callback);
+		this.createTextButton(titleText, project.title, 'Collect Data', callback);
 
 		this.optionCount ++;
 		this.menuGroup.add(titleText);
@@ -243,15 +243,20 @@ var menuState = {
 	},
 
 
-	createTextButton: function( text, callback ) {
+	createTextButton: function( text, originalString, hoverString, callback ) {
 		text.inputEnabled = true;
-		text.events.onInputUp.add(callback);
+		
 		text.events.onInputOver.add(function (target) {
 		  target.setStyle(style.navitem.hover);
+		  target.setText(hoverString);
 		});
+
 		text.events.onInputOut.add(function (target) {
 		  target.setStyle(style.navitem.default);
+		  target.setText(originalString);
 		});
+
+		text.events.onInputUp.add(callback);
 	},
 
 

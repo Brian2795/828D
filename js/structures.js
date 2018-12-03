@@ -14,14 +14,14 @@ Environment.prototype = {
 
 
 
-function Grant( population, environment, recommendedRep, maxFunding, providor='NASA', duration=30 ) {
+function Grant( population, environment, recommendedRep, maxFunding, duration=30 ) {
 	this.population = population;
 	this.environment = environment;
 	this.recommendedRep = recommendedRep;
 	this.maxFunding = maxFunding;
-	this.providor = providor;
 
 	this.verb = game.titleVerbs[Math.floor(Math.random() * game.titleVerbs.length)];
+	this.providor = game.grantProvidors[Math.floor(Math.random() * game.grantProvidors.length)];
 	this.startDate = new Date(game.date.toLocaleDateString());
 	this.propDeadline = this.genDeadline(duration);			// deadline to submit a proposal
 	this.description = this.getDescription();
@@ -50,7 +50,7 @@ Grant.prototype = {
 
 	getDescription: function() {
 		var description = this.verb + ' ' + this.population.key + 's in the ' 
-			+ this.environment.key + '.';
+			+ this.environment.key;
 		return description;
 	},
 }

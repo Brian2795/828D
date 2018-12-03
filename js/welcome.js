@@ -108,6 +108,7 @@ var welcomeState = {
 		game.load.image('mushroom', 'assets/sprites/mushroom.png');
 	},
 
+
 	loadPopulations: function() {
 		this.loadSampleSprites();
 
