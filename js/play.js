@@ -490,178 +490,197 @@ var playState = {
 
     progDialogue: function (player, sample){
         // Provide me with a questNum!
-        questNum = 1;
+        questNum = 0;
         if (questNum == 0){
-            if (this.phase == 0) {
-                this.loadDialogue(questNum, this.phase)        
-                this.phase = this.phase + 1;
-
-            }
-            if (this.phase == 1) {
-                game.paused = true;
-                this.processDialogue();
-            
-                if (this.texts.length == 0) {
-                    game.paused = false;
-                    this.genSamples(20);
-                    this.phase = this.phase + 1;
-                    this.loadDialogue(questNum, this.phase) 
-                }
-            }
-            if (this.phase == 2){
-                this.closePopupDialogue();
-                if(this.measurementList.length >= 5){
-
-                    // preprocess the dialogues
-                    console.log(this.texts)
-                    tx0 = this.texts[0] + jStat.mean(this.measurementList).toString();
-                    this.texts[0] = tx0;
-                    tx1 = this.texts[1] + this.populationMean.toString();
-                    this.texts[1] = tx1;
-                    this.phase = this.phase + 1 
-                }
-                
-            }
-
-            if (this.phase == 3) {
-                this.closePopupDialogue();
-                if(this.measurementList.length >= 5){
-
-                    game.paused = true;
-                    this.processDialogue();
-
-                    if(this.texts.length == 0){
-                        game.paused = false;
-                        this.phase = this.phase + 1;
-                        this.loadDialogue(questNum, this.phase) 
-                        this.measurementList = []
-                    }
-                }
-            }
-
-            if (this.phase == 4){
-                this.closePopupDialogue();
-                if(this.measurementList.length >= 5){
-                    // preprocess the dialogues
-                    tx0 = this.texts[0] + jStat.mean(this.measurementList).toString();
-                    this.texts[0] = tx0;
-                    //tx1 = "asdsaasda";
-                    tx1 = this.texts[1] + this.populationMean.toString();
-                    this.texts[1] = tx1;
-                    this.phase = this.phase + 1 
-                    
-                }
-                
-            }
-
-            if (this.phase == 5) {
-                this.closePopupDialogue();
-                if(this.measurementList.length >= 5){
-
-                    game.paused = true;
-                    this.processDialogue();
-
-                    if(this.texts.length == 0){
-                        game.paused = false;
-                        this.phase = this.phase + 1;
-
-                    }
-                }
-            }
-
-            if (this.phase == 6){
-                this.closePopupDialogue();
-            }
+            this.quest0()
         }
 
         if (questNum == 1){
-
-            if (this.phase == 0) {
-                this.loadDialogue(questNum, this.phase)        
-                this.phase = this.phase + 1;
-
-            }
-            if (this.phase == 1) {
-                game.paused = true;
-                this.processDialogue();
-            
-                if (this.texts.length == 0) {
-                    game.paused = false;
-                    this.genSamples(20);
-                    this.phase = this.phase + 1;
-                    this.loadDialogue(questNum, this.phase) 
-                }
-            }
-            if (this.phase == 2){
-                this.closePopupDialogue();
-                if(this.measurementList.length >= 5){
-
-                    // preprocess the dialogues
-                    console.log(this.texts)
-                    tx0 = this.texts[0] + jStat.stdev(this.measurementList, true).toString();
-                    this.texts[0] = tx0;
-                    this.questVar = this.populationMean + this.populationStdv/2
-                    tx1 = this.texts[2] + (this.questVar).toString();
-                    this.texts[2] = tx1;
-                    this.phase = this.phase + 1 
-                }
-                
-            }
-
-            if (this.phase == 3) {
-                this.closePopupDialogue();
-                if(this.measurementList.length >= 5){
-
-                    game.paused = true;
-                    this.processDialogue();
-
-                    if(this.texts.length == 0){
-                        game.paused = false;
-                        this.phase = this.phase + 1;
-                        this.loadDialogue(questNum, this.phase) 
-                        this.measurementList = []
-                    }
-                }
-            }
-
-            if (this.phase == 4){
-                this.closePopupDialogue();
-                if(this.measurementList.length >= 5){
-
-
-                    deltaReputation = 2
-                    game.totalReputation = Math.min(game.maxReputation, game.totalReputation + deltaReputation)
-                    console.log("reputation gained: " +  deltaReputation)
-
-                    this.phase = this.phase + 1 
-                    
-                }
-                
-            }
-
-            if (this.phase == 5  ) {
-                this.closePopupDialogue();
-
-                mmean = jStat.mean(this.measurementList)
-                sstd = jStat.stdev(this.measurementList, true)
-
-                if((this.measurementList.length >= 5) &&  (mmean - sstd < this.questVar) &&  (mmean + sstd > this.questVar)){
-
-                    game.paused = true;
-                    this.processDialogue();
-
-                    if(this.texts.length == 0){
-                        game.paused = false;
-                        this.phase = this.phase + 1;
-
-                    }
-                }
-            }
-
-            if (this.phase == 6){
-                this.closePopupDialogue();
-            }            
+            this.quest1()
         }
     },
+
+    quest0: function(){
+        if (this.phase == 0) {
+            this.loadDialogue(questNum, this.phase)        
+            this.phase = this.phase + 1;
+
+        }
+        if (this.phase == 1) {
+            game.paused = true;
+            this.processDialogue();
+        
+            if (this.texts.length == 0) {
+                game.paused = false;
+                this.genSamples(20);
+                this.phase = this.phase + 1;
+                this.loadDialogue(questNum, this.phase) 
+            }
+        }
+        if (this.phase == 2){
+            this.closePopupDialogue();
+            if(this.measurementList.length >= 5){
+
+                // preprocess the dialogues
+                console.log(this.texts)
+                tx0 = this.texts[0] + jStat.mean(this.measurementList).toString();
+                this.texts[0] = tx0;
+                tx1 = this.texts[1] + this.populationMean.toString();
+                this.texts[1] = tx1;
+                this.phase = this.phase + 1 
+            }
+            
+        }
+
+        if (this.phase == 3) {
+            this.closePopupDialogue();
+            if(this.measurementList.length >= 5){
+
+                game.paused = true;
+                this.processDialogue();
+
+                if(this.texts.length == 0){
+                    game.paused = false;
+                    this.phase = this.phase + 1;
+                    this.loadDialogue(questNum, this.phase) 
+                    this.measurementList = []
+                }
+            }
+        }
+
+        if (this.phase == 4){
+            this.closePopupDialogue();
+            if(this.measurementList.length >= 5){
+                // preprocess the dialogues
+                tx0 = this.texts[0] + jStat.mean(this.measurementList).toString();
+                this.texts[0] = tx0;
+                //tx1 = "asdsaasda";
+                tx1 = this.texts[1] + this.populationMean.toString();
+                this.texts[1] = tx1;
+                this.phase = this.phase + 1 
+                
+            }
+            
+        }
+
+        if (this.phase == 5) {
+            this.closePopupDialogue();
+            if(this.measurementList.length >= 5){
+
+                game.paused = true;
+                this.processDialogue();
+
+                if(this.texts.length == 0){
+                    game.paused = false;
+                    this.phase = this.phase + 1;
+
+                }
+            }
+        }
+
+        if (this.phase == 6){
+            this.closePopupDialogue();
+        }
+    },
+
+    quest1: function(){
+        if (this.phase == 0) {
+            this.loadDialogue(questNum, this.phase)        
+            this.phase = this.phase + 1;
+
+        }
+        if (this.phase == 1) {
+            game.paused = true;
+            this.processDialogue();
+        
+            if (this.texts.length == 0) {
+                game.paused = false;
+                this.genSamples(20);
+                this.phase = this.phase + 1;
+                this.loadDialogue(questNum, this.phase) 
+            }
+        }
+        if (this.phase == 2){
+            this.closePopupDialogue();
+            if(this.measurementList.length >= 5){
+
+                // preprocess the dialogues
+                console.log(this.texts)
+                tx0 = this.texts[0] + jStat.stdev(this.measurementList, true).toString();
+                this.texts[0] = tx0;
+                this.questVar = this.populationMean + this.populationStdv/2
+                tx1 = this.texts[2] + (this.questVar).toString();
+                this.texts[2] = tx1;
+                this.phase = this.phase + 1 
+            }
+            
+        }
+
+        if (this.phase == 3) {
+            this.closePopupDialogue();
+            if(this.measurementList.length >= 5){
+
+                game.paused = true;
+                this.processDialogue();
+
+                if(this.texts.length == 0){
+                    game.paused = false;
+                    this.phase = this.phase + 1;
+                    this.loadDialogue(questNum, this.phase) 
+                    this.measurementList = []
+                }
+            }
+        }
+
+        if (this.phase == 4){
+            this.closePopupDialogue();
+            if(this.measurementList.length >= 5){
+
+
+                deltaReputation = 2
+                game.totalReputation = Math.min(game.maxReputation, game.totalReputation + deltaReputation)
+                console.log("reputation gained: " +  deltaReputation)
+
+                this.phase = this.phase + 1 
+                
+            }
+            
+        }
+
+        if (this.phase == 5  ) {
+            this.closePopupDialogue();
+
+            mmean = jStat.mean(this.measurementList)
+            sstd = jStat.stdev(this.measurementList, true)
+
+            if((this.measurementList.length >= 5) &&  (mmean - sstd < this.questVar) &&  (mmean + sstd > this.questVar)){
+
+                game.paused = true;
+                this.processDialogue();
+
+                if(this.texts.length == 0){
+                    game.paused = false;
+                    this.phase = this.phase + 1;
+
+                }
+            }
+        }
+
+        if (this.phase == 6){
+            this.closePopupDialogue();
+        } 
+    },
+
+    quest2: function(){
+
+    },
+
+    quest3: function(){
+
+    },
+
+    quest4: function(){
+
+    }
 
 };
