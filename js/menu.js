@@ -71,8 +71,10 @@ var menuState = {
 
 
 	initMissionList: function() {
-		this.addMenuTitleAndOptions(this.optionStateEnum.MISSIONS);
+		this.menuGroup = game.add.group();
 		this.addGrantMissionToggleButton();
+		this.addProjectList();
+		
 	},
 
 
@@ -109,28 +111,46 @@ var menuState = {
 
 
 /* UPDATES & INTERACTIVE */
-	addMenuTitleAndOptions: function (grantsOrMissions) {
-		this.menuGroup = game.add.group();
-		var titleText = game.add.text(
-			game.width - 500,
-			100,
-			grantsOrMissions === this.optionStateEnum.MISSIONS ?
-				"~Select a mission~" : "~Select a grant~",
-			style.navitem.hover
-		);
-		if (grantsOrMissions === this.optionStateEnum.MISSIONS) {
-			for (i = 0; i < game.projectsOngoing.length; i++) {
-				this.addMenuOption(game.projectsOngoing[i]);
-			}
+	toggleGrantsMissions: function() {
+		console.log(this.currentOptionState);
+		this.menuGroup.removeAll(/* Destroy */true, /* Silent */false, /* destroyTexture */false);
+		this.optionCount = 1;
+		if (this.currentOptionState === this.optionStateEnum.GRANTS) {
+			this.addProjectList();
 		} else {
-			for (i = 0; i < game.grantsAvailable.length; i++) {
-				this.addMenuOption(game.grantsAvailable[i]);
-			}
+			this.addGrantList();
 		}
-		this.menuGroup.add(titleText);
-		// We initialize the popup again so that the popups are drawn on top of
-		// the menu options
-		this.initPopupState();
+		
+		this.initPopupState(); 	// reinitialize popups for visual depth priority
+		// console.log(this.grantsMissionsButton);
+	},
+
+
+	addGrantList: function( titleText='Available Grants' ) {
+		var title = game.add.text(game.width-500, 100, titleText, style.navitem.hover);
+		this.currentOptionState = this.optionStateEnum.GRANTS;
+		this.grantsMissionsButton.setFrames(1,1,1);
+		this.menuGroup.add(title);
+		
+		for (i = 0; i < game.grantsAvailable.length; i++) {
+			this.addMenuOption(game.grantsAvailable[i]);
+		}
+		console.log("Toggled to grants.");
+		console.log(game.grantsAvailable);
+	},
+
+
+	addProjectList: function( titleText='Ongoing Projects' ) {
+		var title = game.add.text(game.width-500, 100, titleText, style.navitem.hover);
+		this.currentOptionState = this.optionStateEnum.MISSIONS;
+		this.grantsMissionsButton.setFrames(2,2,2);
+		this.menuGroup.add(title);
+
+		for (i = 0; i < game.projectsOngoing.length; i++) {
+			this.addMenuOption(game.projectsOngoing[i]);
+		}
+		console.log("Toggled to projects.");
+		console.log(game.projectsOngoing);
 	},
 
 
@@ -180,28 +200,6 @@ var menuState = {
 		" of "+(repChange < 0 ? "" : "+")+repChange.toFixed(2)+"%!\n"+
 		"~Press ESC to close~";
 		return summary;
-	},
-
-
-	toggleGrantsMissions: function() {
-		if (this.currentOptionState === this.optionStateEnum.GRANTS) {
-			this.currentOptionState = this.optionStateEnum.MISSIONS;
-			this.grantsMissionsButton.setFrames(2,2,2);
-			this.menuGroup.removeAll(/* Destroy */true, /* Silent */false, /* destroyTexture */false);
-			this.optionCount = 1;
-			this.addMenuTitleAndOptions(this.optionStateEnum.MISSIONS);
-			console.log(this.grantsMissionsButton);
-			console.log("Toggled to missions");
-			//this.openPopupWindow("sadfsd");
-		} else {
-			this.currentOptionState = this.optionStateEnum.GRANTS;
-			this.grantsMissionsButton.setFrames(1,1,1);
-			console.log("Toggled to grants");
-			this.menuGroup.removeAll(/* Destroy */true, /* Silent */false, /* destroyTexture */false);
-			this.optionCount = 1;
-			this.addMenuTitleAndOptions(this.optionStateEnum.GRANTS);
-			console.log("Called removeall");
-		}
 	},
 
 
