@@ -37,10 +37,33 @@ var playState = {
 
 
         this.dials = {0: {0: ["Hi, welcome to PI simulator. I am your PI", "We are, right now, studying the distribution of samples.", "Can you go collect some samples for me?", "Collect enough samples so that you can know your mean for sure!", ""], 
-                    2:["Your current mean is: ", "The actual mean is: ", "As you can see there is a disparity in two values.", "In order to assess the mean of the data, you have to \ncollect a fair number of data to be confident of mean.", 
-                            "I want to assess the mean again. Collect more samples for me!", ""], 
-                    4: ["Your current mean is: ", "The actual mean is: ", "Now, go back to the lab! ", ""]  } };
+                        2:["Your current mean is: ", "The actual mean is: ", "As you can see there is a disparity in two values.", "In order to assess the mean of the data, you have to \ncollect a fair number of data to be confident of mean.", 
+                            "I want to assess the mean again. Collect more samples for me!", "I would like to collect as accurate mean as possible!", ""], 
+                        4: ["Your current mean is: ", "The actual mean is: ", "Now, go back to the lab! ", ""]  },
 
+                    1:{0:["Hmm. I just discovered that the values of samples are different from each other.", "In order to publich a paper, we have to note this uncertainty numerically.", 
+                            "I would like you to collect some samples to measure this uncertainty", ""],
+                        2:["The uncertainty from your sample is:", "It is said that 65% of samples are within 1 uncertainty range.", "Now collect more samples that this value can be in 1 uncetainty range: ",
+                         "this may be not achievable, so feel free to go back to the lab! ",""],
+                        4:["Thank you!", "Now, go back to the lab!", ""]},
+                    
+                    2:{0:["Ok. We know what an uncertainty and a mean of sample are.", "However, how certain are we about the mean?","I mean, that mean changes as we collect more sample.",
+                        "Therefore, we need a measure to evaluate the uncertainty of the mean.", "Now, collect some samples to evaluate that",""],
+                        2:["Your sample uncertainty is:", "Your mean (population) uncertainty is:", "The population uncertainty is sample uncertainty/sqrt(n)", "Now, collect more samples so that your sample uncertainty \n is 3 times larger than your population uncertainty",""],
+                        4:["Thanks!", "Now, go back to the lab!", ""]},
+                    
+                    3:{0:["One of my colleague asked me how confident \n I am about the mean of samples I collected.", "Hmmm. I do we answer that?", "Can you collect some samples to examine confidence intervals?", ""],
+                        2:["You must have observed that \nthe confidence interval actually shrinks.", "95% confidence interval tells you that you are \n95% confident that your actual mean belongs to the interval given.",
+                        "As you collect more samples, you have more clues where \nthe actual mean is, so the confidence interval shrinks! ","Now, collect enough samples that the confidence interval width \nis smaller than the sample stdev.", ""],
+                        4:["Good job!", "Now, go back to the lab!", ""]},
+                    
+                    4:{0:["Wow! We gained a lot of insights about the sample!", "Now, we need to conclude that our samples \nare different from previously collected samples.", 
+                        "In order to conclude statistical signficance, we need \nto show that the difference of two values is larger \nthan sqrt of sum of squares of uncertainty",
+                        "if one value has very small uncertainty, the difference \nof two values must be bigger than the uncertainty.", 
+                        "For our case, if a value is outside the confidence interval,\nthe difference of two values are statistically significant!",
+                        "Now, collect some samples that we can conclude the statistical significance.", "The previously collected sample has the mean:", ""],
+                        2:["Hmmm you proved the statistical significance!","We can finally publish the paper!", ""]
+                    }};
         // grant creation test code
         new Grant(14, 20000);
     },
@@ -468,6 +491,16 @@ var playState = {
     progDialogue: function (player, sample){
         // Provide me with a questNum!
         questNum = 0;
+        if (questNum == 0){
+            this.quest0()
+        }
+
+        if (questNum == 1){
+            this.quest1()
+        }
+    },
+
+    quest0: function(){
         if (this.phase == 0) {
             this.loadDialogue(questNum, this.phase)        
             this.phase = this.phase + 1;
@@ -549,5 +582,105 @@ var playState = {
             this.closePopupDialogue();
         }
     },
+
+    quest1: function(){
+        if (this.phase == 0) {
+            this.loadDialogue(questNum, this.phase)        
+            this.phase = this.phase + 1;
+
+        }
+        if (this.phase == 1) {
+            game.paused = true;
+            this.processDialogue();
+        
+            if (this.texts.length == 0) {
+                game.paused = false;
+                this.genSamples(20);
+                this.phase = this.phase + 1;
+                this.loadDialogue(questNum, this.phase) 
+            }
+        }
+        if (this.phase == 2){
+            this.closePopupDialogue();
+            if(this.measurementList.length >= 5){
+
+                // preprocess the dialogues
+                console.log(this.texts)
+                tx0 = this.texts[0] + jStat.stdev(this.measurementList, true).toString();
+                this.texts[0] = tx0;
+                this.questVar = this.populationMean + this.populationStdv/2
+                tx1 = this.texts[2] + (this.questVar).toString();
+                this.texts[2] = tx1;
+                this.phase = this.phase + 1 
+            }
+            
+        }
+
+        if (this.phase == 3) {
+            this.closePopupDialogue();
+            if(this.measurementList.length >= 5){
+
+                game.paused = true;
+                this.processDialogue();
+
+                if(this.texts.length == 0){
+                    game.paused = false;
+                    this.phase = this.phase + 1;
+                    this.loadDialogue(questNum, this.phase) 
+                    this.measurementList = []
+                }
+            }
+        }
+
+        if (this.phase == 4){
+            this.closePopupDialogue();
+            if(this.measurementList.length >= 5){
+
+
+                deltaReputation = 2
+                game.totalReputation = Math.min(game.maxReputation, game.totalReputation + deltaReputation)
+                console.log("reputation gained: " +  deltaReputation)
+
+                this.phase = this.phase + 1 
+                
+            }
+            
+        }
+
+        if (this.phase == 5  ) {
+            this.closePopupDialogue();
+
+            mmean = jStat.mean(this.measurementList)
+            sstd = jStat.stdev(this.measurementList, true)
+
+            if((this.measurementList.length >= 5) &&  (mmean - sstd < this.questVar) &&  (mmean + sstd > this.questVar)){
+
+                game.paused = true;
+                this.processDialogue();
+
+                if(this.texts.length == 0){
+                    game.paused = false;
+                    this.phase = this.phase + 1;
+
+                }
+            }
+        }
+
+        if (this.phase == 6){
+            this.closePopupDialogue();
+        } 
+    },
+
+    quest2: function(){
+
+    },
+
+    quest3: function(){
+
+    },
+
+    quest4: function(){
+
+    }
 
 };
