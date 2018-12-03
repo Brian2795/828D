@@ -20,11 +20,11 @@
  "tilesets":[
         {
          "firstgid":1,
-         "image":"C:\/Program Files (x86)\/Tiled\/examples\/tmw_desert_spacing.png",
+         "image":"..\/tiles\/desert.png",
          "imageheight":199,
          "imagewidth":265,
          "margin":1,
-         "name":"Desert",
+         "name":"desert-tiles",
          "properties":
             {
 

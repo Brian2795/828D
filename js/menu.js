@@ -292,13 +292,14 @@ var menuState = {
 
 
 	genProjects: function(numProjects) {
-		// Population( name, mean, stdv, prodPeriod, processCost, sprite )
-		var pop1 = new Population('diamond', 10, 1, 'mm', 10, 200, 'assets/sprites/diamond.png');
-		var pop2 = new Population('mushroom', 10, 2, 'cm', 15, 50, 'assets/sprites/mushroom.png');
-		var pop3 = new Population('car', 3.5, 1, 'm', 15, 2000, 'assets/sprites/car.png');
-		
-		var env1 = new Environment('Desert', 'assets/tilemaps/maps/desert.json', 
-			'assets/tilemaps/tiles/tmw_desert_spacing.png');
+		// Population( name, mean, stdv, prodPeriod, sprite )
+		var env1 = game.environments['desert'];
+		var env2 = game.environments['space'];
+		var env3 = game.environments['wasteland'];
+
+		var pop1 = game.populations['diamond'];
+		var pop2 = game.populations['mushroom'];
+		var pop3 = game.populations['carrot'];
 
 		// var desc1 = 'Find the average weight of diamonds in the mine!';
 		// var desc2 = 'Find the average wingspan of birds in the forest!';

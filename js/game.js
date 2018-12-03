@@ -16,4 +16,11 @@ game.projectsCompleted = [];
 game.projectsRejected = [];
 game.grantsAvailable = [];
 
+// predeclaring 
+
+
+game.titleVerbs = ['Processing', 'Studying', 'Observing', 'Evaluating', 'Investigating'];
+game.environments = {};
+game.populations = {};
+
 game.state.start('boot');

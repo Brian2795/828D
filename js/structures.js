@@ -15,7 +15,7 @@ function Grant( recommendedRep, maxFunding, duration=30 ) {
 	this.recommendedRep = recommendedRep;
 	this.maxFunding = maxFunding;
 	this.startDate = new Date(game.date.toLocaleDateString());
-	this.propDeadline = this.generateDeadline(duration);			// deadline to submit a proposal
+	this.propDeadline = this.genDeadline(duration);			// deadline to submit a proposal
 	console.log('New grant generated.\nStart date set to ' + this.startDate.toLocaleDateString() +
 		'\nProposal deadline set to ' + this.propDeadline.toLocaleDateString());
 }
@@ -23,7 +23,7 @@ function Grant( recommendedRep, maxFunding, duration=30 ) {
 Grant.prototype = {
 	constructor: Grant,	
 
-	generateDeadline: function( duration ) {
+	genDeadline: function( duration ) {
 		var deadline = new Date(this.startDate.toDateString());
 		deadline.setTime(deadline.getTime() + (duration * 24 * 60 * 60 * 1000));
 		return deadline;
@@ -40,7 +40,7 @@ Grant.prototype = {
 }
 
 
-function Population( key, mean, stdv, units, prodPeriod, processCost, sprite ) {
+function Population( key, mean, stdv, units, processCost, sprite, prodPeriod=1) {
 	this.key = key;
 	this.mean = mean;
 	this.units = units; 
@@ -48,6 +48,8 @@ function Population( key, mean, stdv, units, prodPeriod, processCost, sprite ) {
 	this.prodPeriod = prodPeriod; 		// the average expected time to generate a single sample on the map
 	this.processCost = processCost; 	// cost to process a single sample from this population
 	this.sprite = sprite;
+
+
 }
 
 Population.prototype = {
@@ -63,11 +65,11 @@ Population.prototype = {
 }
 
 
-function Project( title, funding, population, environment, repMultiplier, duration=30 ) {
+function Project( title, funding, population, environment, exposure=1, duration=30 ) {
 	this.fundingAward = funding;
 	this.population = population;
 	this.environment = environment;
-	this.repMultiplier = repMultiplier;
+	this.exposure = exposure;
 	this.title = title;
 	
 	// reputation award 

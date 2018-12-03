@@ -19,9 +19,6 @@ var playState = {
 
 
     preload: function() {
-        game.load.tilemap(this.envKey, this.envTilemap, null, Phaser.Tilemap.TILED_JSON);
-        game.load.image('tiles', this.envTiles);
-        game.load.image('sample', this.sampleSprite);
     },
 
 
@@ -142,8 +139,11 @@ var playState = {
 
 
     initMap: function() {
-        this.map = game.add.tilemap(this.envKey);
-        this.map.addTilesetImage('Desert', 'tiles');
+        this.map = game.add.tilemap(this.envTilemap);
+        console.log(this.envTilemap);
+        console.log(this.envTiles);
+
+        this.map.addTilesetImage(this.envTiles);
         layer = this.map.createLayer('Ground');
         layer.resizeWorld();
     },
@@ -351,7 +351,7 @@ var playState = {
         for (var i = 0; i < totSamples; i++) {
             locX = game.width * Math.random();
             locY = game.height * Math.random();
-            var sample = this.samples.create(locX , locY, 'sample');
+            var sample = this.samples.create(locX , locY, this.sampleSprite);
         }
     },
 
