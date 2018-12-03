@@ -34,6 +34,7 @@ var playState = {
 
         this.phase = 0;
         this.texts = [];
+        this.quest = Math.floor(Math.random() * 5);
 
 
         this.dials = {0: {0: ["Hi, welcome to PI simulator. I am your PI", "We are, right now, studying the distribution of samples.", "Can you go collect some samples for me?", "Collect enough samples so that you can know your mean for sure!", ""], 
@@ -123,6 +124,7 @@ var playState = {
         this.initDynamicInfo();
         this.initKeyMapping();
         this.roundSpend = 0;
+
     },
 
 
@@ -490,7 +492,9 @@ var playState = {
 
     progDialogue: function (player, sample){
         // Provide me with a questNum!
-        questNum = 3;
+        
+        questNum = this.quest
+        //console.log(questNum)
         if (questNum == 0){
             this.quest0()
         }
@@ -506,10 +510,16 @@ var playState = {
         if (questNum == 3){
             this.quest3()
         }
+        if (questNum == 4){
+            this.quest4()
 
+        }
     },
 
     quest0: function(){
+
+        questNum = this.quest;
+
         if (this.phase == 0) {
             this.loadDialogue(questNum, this.phase)        
             this.phase = this.phase + 1;
@@ -593,6 +603,7 @@ var playState = {
     },
 
     quest1: function(){
+        questNum = this.quest;
         if (this.phase == 0) {
             this.loadDialogue(questNum, this.phase)        
             this.phase = this.phase + 1;
@@ -681,6 +692,7 @@ var playState = {
     },
 
     quest2: function(){
+        questNum = this.quest;
         if (this.phase == 0) {
             this.loadDialogue(questNum, this.phase)        
             this.phase = this.phase + 1;
@@ -770,6 +782,7 @@ var playState = {
     },
 
     quest3: function(){
+        questNum = this.quest;
         if (this.phase == 0) {
             this.loadDialogue(questNum, this.phase)        
             this.phase = this.phase + 1;
@@ -855,7 +868,65 @@ var playState = {
     },
 
     quest4: function(){
+        questNum = this.quest;
+        if (this.phase == 0) {
+            this.loadDialogue(questNum, this.phase)    
 
+            this.questVar = this.populationMean + this.populationStdv * 0.5
+
+            tx6 = this.texts[6] + this.questVar.toString();
+            this.texts[6] = tx6;
+
+
+            this.phase = this.phase + 1;
+
+        }
+        if (this.phase == 1) {
+            game.paused = true;
+            this.processDialogue();
+        
+            if (this.texts.length == 0) {
+                game.paused = false;
+                this.genSamples(20);
+                this.phase = this.phase + 1;
+                this.loadDialogue(questNum, this.phase) 
+            }
+        }
+        if (this.phase == 2){
+            this.closePopupDialogue();
+
+            confInt = this.computeConfidenceInterval();
+            width = confInt[1] - confInt[0];
+            mmean = jStat.mean(this.measurementList);
+
+            if(this.measurementList.length >= 5 && (  (mmean + width/2) < this.questVar)){
+
+                // preprocess the dialogues
+                console.log(this.texts)
+                this.phase = this.phase + 1 
+                deltaReputation = 2
+                game.totalReputation = Math.min(game.maxReputation, game.totalReputation + deltaReputation)
+            }
+            
+        }
+
+        if (this.phase == 3) {
+            this.closePopupDialogue();
+            if(this.measurementList.length >= 5){
+
+                game.paused = true;
+                this.processDialogue();
+
+                if(this.texts.length == 0){
+                    game.paused = false;
+                    this.phase = this.phase + 1;
+                }
+            }
+        }
+
+        if (this.phase == 4){
+            this.closePopupDialogue();
+        } 
     }
 
 };
