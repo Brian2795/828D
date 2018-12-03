@@ -42,8 +42,12 @@ var menuState = {
 
 
 	render: function() {
-	    game.debug.text(game.date.toDateString(), 32, 32);
-	    game.debug.text(game.date.toLocaleTimeString(), 32, 48);
+	    var date = game.date.toDateString();
+	    var time = game.date.toLocaleTimeString();
+	    var timeMin = time.slice(0, time.length-6) + time.slice(time.length-2);
+
+	    game.debug.text(date, 32, 32);
+	    game.debug.text(timeMin, 32, 48);
 	},
 
 
@@ -100,7 +104,6 @@ var menuState = {
         //this.popupState.spsp = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
         //this.popupState.spsp.onDown.add(this.progDialogue, this);
 	},
-
 
 
 
@@ -200,6 +203,8 @@ var menuState = {
 			console.log("Called removeall");
 		}
 	},
+
+
 
 
 /* TERTIARY HELPERS */
