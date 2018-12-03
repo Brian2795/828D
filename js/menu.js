@@ -7,8 +7,8 @@ var menuState = {
 			MISSIONS: 2
 		};
 		this.currentOptionState = this.optionStateEnum.MISSIONS;
-		game.projectsOngoing = this.genProjects();
-		game.grantsAvailable = this.genGrants();
+		this.genProjects();
+		this.genGrants();
 	},
 
 
@@ -315,7 +315,6 @@ var menuState = {
 
 
 	genProjects: function( numProjects=3 ) {
-		// Population( name, mean, stdv, prodPeriod, sprite )
 		var env1 = game.environments['desert'];
 		var env2 = game.environments['space'];
 		var env3 = game.environments['wasteland'];
@@ -325,9 +324,9 @@ var menuState = {
 		var pop3 = game.populations['carrot'];
 
 		// Project( name, funding, population, recommendedRep )
-		var p1 =new Project('Diamond Mine', 10000, pop1, env1, 20);
-		var p2 = new Project('Tropics', 20000, pop2, env1, 60);
-		var p3 = new Project('Arctic', 50000, pop3, env1, 100);
+		var p1 = new Project('Diamond Mine', '', pop1, env1, 10000, 20);
+		var p2 = new Project('Tropics', '', pop2, env1, 20000, 60);
+		var p3 = new Project('Arctic', '', pop3, env1, 50000, 100);
 
 		projects = [p1,p2,p3];
 		return projects;
