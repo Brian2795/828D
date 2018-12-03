@@ -48,9 +48,6 @@ var menuState = {
 
 
 
-
-
-
 /** BEGIN EXPLICITLY CALLED FUNCTIONS HERE **/
 
 
@@ -235,6 +232,7 @@ var menuState = {
 		this.menuGroup.add(smallText);
 	},
 
+
 	initQuote: function(quoteX, quoteY) {
 		var quoteText = game.add.text(
 			quoteX,
@@ -251,12 +249,10 @@ var menuState = {
 	},
 
 
-	addHealthBar: function(barX, barY, barLabel, barPercent) {
-		var barWidth = 250;
-		var reputationBarX = barX + barWidth/2;
-		var barY = barY;
+	addHealthBar: function(barX, barY, barLabel, barPercent, barWidth=250) {
 		var barConfig = {
-			x: reputationBarX, y: barY,
+			x: barX + barWidth/2, 
+			y: barY,
 			width: barWidth,
 			bar: {
 				color: '#42f498'

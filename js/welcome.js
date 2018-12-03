@@ -25,11 +25,9 @@ var welcomeState = {
 
 
 	create: function() {
-		this.sleep(1000).then(() => {
-			this.loadingLabel.setText("Loaded!")
-			var wkey = game.input.keyboard.addKey(Phaser.Keyboard.W);
-			wkey.onDown.addOnce(this.start, this);
-		});
+		this.loadingLabel.setText("Loaded!")
+		var wkey = game.input.keyboard.addKey(Phaser.Keyboard.W);
+		wkey.onDown.addOnce(this.start, this);
 	},
 
 
