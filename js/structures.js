@@ -11,7 +11,9 @@ Environment.prototype = {
 }
 
 
-function Grant( recommendedRep, maxFunding, duration=30 ) {
+function Grant( population, environment, verb, recommendedRep, maxFunding, duration=30 ) {
+	this.population = population;
+	this.environment = environment;
 	this.recommendedRep = recommendedRep;
 	this.maxFunding = maxFunding;
 	this.startDate = new Date(game.date.toLocaleDateString());
@@ -29,13 +31,19 @@ Grant.prototype = {
 		return deadline;
 	},
 
-	generateProject: function() {
+	getDescription: function() {
+
+		return description;
+	},
+
+	genProject: function() {
 	/* Generates a project with funding amount and a deadline. Funding generated 
 	 * based on the recommended reputation of the project and the reputation of
 	 * the player.
 	 */
 
-		return
+
+		return project;
 	},
 }
 

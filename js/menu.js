@@ -7,8 +7,8 @@ var menuState = {
 			MISSIONS: 2
 		};
 		this.currentOptionState = this.optionStateEnum.MISSIONS;
-		game.projectsOngoing = this.genProjects(3);
-		game.grantsAvailable = this.genGrants(3);
+		game.projectsOngoing = this.genProjects();
+		game.grantsAvailable = this.genGrants();
 	},
 
 
@@ -99,7 +99,7 @@ var menuState = {
         this.popupState.closePopupKey = game.input.keyboard.addKey(Phaser.Keyboard.ESC);
         this.popupState.closePopupKey.onDown.add(this.closePopupWindow, this);
         this.style = { font: "25px Arial", fill: "#555555", wordWrap: true, wordWrapWidth: 500, align: "center", backgroundColor: "#ffff00" };
-        this.popupState.popupText = game.add.text(0, 0, "You found a\nBLUE sample\nSize: 2mm\nPress ESC to continue", style);
+        this.popupState.popupText = game.add.text(0, 0, "", style);
         this.popupState.popupText.anchor.set(0.5);
         this.popupState.popupText.visible = false;
 
@@ -290,7 +290,7 @@ var menuState = {
 
 
 
-	genProjects: function(numProjects) {
+	genProjects: function( numProjects=3 ) {
 		// Population( name, mean, stdv, prodPeriod, sprite )
 		var env1 = game.environments['desert'];
 		var env2 = game.environments['space'];
@@ -299,10 +299,6 @@ var menuState = {
 		var pop1 = game.populations['diamond'];
 		var pop2 = game.populations['mushroom'];
 		var pop3 = game.populations['carrot'];
-
-		// var desc1 = 'Find the average weight of diamonds in the mine!';
-		// var desc2 = 'Find the average wingspan of birds in the forest!';
- 		// var desc3 = 'Find the average thickness of the arctic ice sheets!';
 
 		// Project( name, funding, population, recommendedRep )
 		var p1 =new Project('Diamond Mine', 10000, pop1, env1, 20);
@@ -315,27 +311,38 @@ var menuState = {
 	},
 
 
-	genGrants: function(numGrants) {
-		// Population( name, mean, stdv, prodPeriod, processCost, sprite )
-		var pop1 = new Population('diamond', 10, 1, 'mm', 10, 200, 'assets/sprites/diamond.png');
-		var pop2 = new Population('mushroom', 10, 2, 'cm', 15, 50, 'assets/sprites/mushroom.png');
-		var pop3 = new Population('car', 3.5, 1, 'm', 15, 2000, 'assets/sprites/car.png');
+	genGrants: function( numGrants=3 ) {
+		var grants = [];
+
+		for (var i=0; i<numGrants; i++) {
+			grants.push(this.genGrant());
+		}
+		return grants;
+	},
+
+
+	genGrant: function( population=null, environment=null, verb=null ) {
+	/* Generates a grant based on specified parameters or randomly for any
+	 * unspecified parameters.
+	 */
+		if (!population) {
+			var popKeys = Object.keys(game.populations);
+			var key = popKeys[Math.random() * popKeys.length];
+			population = game.populations[key];
+		};
+
+		if (!environment) {
+			var envKeys = Object.keys(game.environments);
+			var key = envKeys[Math.random() * envKeys.length];
+			environment = game.environments[key];
+		};
 		
-		var env1 = new Environment('Desert', 'assets/tilemaps/maps/desert.json', 
-			'assets/tilemaps/tiles/tmw_desert_spacing.png');
+		if (!verb) {
+			verb = game.titleVerbs[Math.random() * game.titleVerbs.length]
+		};
 
-		// var desc1 = 'Find the average weight of diamonds in the mine!';
-		// var desc2 = 'Find the average wingspan of birds in the forest!';
- 		// var desc3 = 'Find the average thickness of the arctic ice sheets!';
-
-		// Project( name, funding, population, recommendedRep )
-		var p1 = new Project('Diamond Mine', 10000, pop1, env1, 20);
-		var p2 = new Project('Tropics', 20000, pop2, env1, 60);
-		var p3 = new Project('Arctic', 50000, pop3, env1, 100);
-
-
-		projects = [p1,p2,p3];
-		return projects;
+		// Grant( population, environment, recommendedRep, maxFunding, duration=30 )
+		return new Grant(population, environment, verb, 10, 10000);
 	},
 
 
