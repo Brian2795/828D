@@ -6,22 +6,29 @@ function Environment( key, tilemap, tiles, moveMultiplier=1, prodMultiplier=1 ) 
 	this.prodMultiplier = prodMultiplier;	// multiplier to production rate of samples
 }
 
+
 Environment.prototype = {
     constructor: Environment,
 }
 
 
-function Grant( population, environment, verb, recommendedRep, maxFunding, duration=30 ) {
+
+
+function Grant( population, environment, recommendedRep, maxFunding, providor='NASA', duration=30 ) {
 	this.population = population;
 	this.environment = environment;
-	this.verb = verb;
 	this.recommendedRep = recommendedRep;
 	this.maxFunding = maxFunding;
+	this.providor = providor;
+
+	this.verb = game.titleVerbs[Math.floor(Math.random() * game.titleVerbs.length)];
 	this.startDate = new Date(game.date.toLocaleDateString());
 	this.propDeadline = this.genDeadline(duration);			// deadline to submit a proposal
+	this.title = this.getDescription();
 	console.log('New grant generated.\nStart date set to ' + this.startDate.toLocaleDateString() +
 		'\nProposal deadline set to ' + this.propDeadline.toLocaleDateString());
 }
+
 
 Grant.prototype = {
 	constructor: Grant,	
@@ -49,6 +56,8 @@ Grant.prototype = {
 }
 
 
+
+
 function Population( key, mean, stdv, units, processCost, sprite, prodPeriod=1) {
 	this.key = key;
 	this.mean = mean;
@@ -57,21 +66,14 @@ function Population( key, mean, stdv, units, processCost, sprite, prodPeriod=1) 
 	this.prodPeriod = prodPeriod; 		// the average expected time to generate a single sample on the map
 	this.processCost = processCost; 	// cost to process a single sample from this population
 	this.sprite = sprite;
-
-
 }
+
 
 Population.prototype = {
     constructor: Population,
-    // saveScore:function (theScoreToAdd)  {
-    //     this.quizScores.push(theScoreToAdd)
-    // },
-
-    // changeEmail:function (newEmail)  {
-    //     this.email = newEmail;
-    //     return "New Email Saved: " + this.email;
-    // }
 }
+
+
 
 
 function Project( title, funding, population, environment, exposure=1, duration=30 ) {
@@ -83,6 +85,7 @@ function Project( title, funding, population, environment, exposure=1, duration=
 	
 	// reputation award 
 }
+
 
 Project.prototype = {
 	constructor: Project,

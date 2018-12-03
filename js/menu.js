@@ -147,7 +147,7 @@ var menuState = {
 		this.menuGroup.add(title);
 
 		for (i = 0; i < game.projectsOngoing.length; i++) {
-			this.addMenuOption(game.projectsOngoing[i]);
+			this.addProjectCard(game.projectsOngoing[i]);
 		}
 		console.log("Toggled to projects.");
 		console.log(game.projectsOngoing);
@@ -236,6 +236,38 @@ var menuState = {
 	},
 
 
+
+
+	addProjectCard: function( project, totalHeight=150, titleHeight=50, padding=50) {
+		var xLoc = game.width - 500; 
+		var yLocTitle = (this.optionCount*totalHeight) + padding;
+		var yLocDetails = yLocTitle + titleHeight;
+		var details = project.description + "\nFunding: " + project.fundingAward 
+			+ "\nExposure: " + project.exposure;
+		var callback = function () { game.state.start('play', false, false, project); };
+
+		var titleText = game.add.text(xLoc, yLocTitle, project.title, style.navitem.default);
+		var detailText = game.add.text(xLoc, yLocDetails, details, style.navitem.subtitle);
+		this.createTextButton(titleText, callback);
+
+		this.optionCount ++;
+		this.menuGroup.add(titleText);
+		this.menuGroup.add(detailText);
+	},
+
+
+	createTextButton: function( text, callback ) {
+		text.inputEnabled = true;
+		text.events.onInputUp.add(callback);
+		text.events.onInputOver.add(function (target) {
+		  target.setStyle(style.navitem.hover);
+		});
+		text.events.onInputOut.add(function (target) {
+		  target.setStyle(style.navitem.default);
+		});
+	},
+
+
 	initQuote: function(quoteX, quoteY) {
 		var quoteText = game.add.text(
 			quoteX,
@@ -305,7 +337,6 @@ var menuState = {
 		var p2 = new Project('Tropics', 20000, pop2, env1, 60);
 		var p3 = new Project('Arctic', 50000, pop3, env1, 100);
 
-
 		projects = [p1,p2,p3];
 		return projects;
 	},
@@ -337,11 +368,7 @@ var menuState = {
 			environment = game.environments[key];
 		};
 		
-		if (!verb) {
-			verb = game.titleVerbs[Math.floor(Math.random() * game.titleVerbs.length)];
-		};
-
-		var grant = new Grant(population, environment, verb, 10, 10000);
+		var grant = new Grant(population, environment, 10, 10000);
 		console.log(grant.getDescription());
 
 		// Grant( population, environment, recommendedRep, maxFunding, duration=30 )
