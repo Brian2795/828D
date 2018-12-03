@@ -490,13 +490,17 @@ var playState = {
 
     progDialogue: function (player, sample){
         // Provide me with a questNum!
-        questNum = 0;
+        questNum = 2;
         if (questNum == 0){
             this.quest0()
         }
 
         if (questNum == 1){
             this.quest1()
+        }
+
+        if (questNum == 2){
+            this.quest2()
         }
     },
 
@@ -672,7 +676,92 @@ var playState = {
     },
 
     quest2: function(){
+        if (this.phase == 0) {
+            this.loadDialogue(questNum, this.phase)        
+            this.phase = this.phase + 1;
 
+        }
+        if (this.phase == 1) {
+            game.paused = true;
+            this.processDialogue();
+        
+            if (this.texts.length == 0) {
+                game.paused = false;
+                this.genSamples(20);
+                this.phase = this.phase + 1;
+                this.loadDialogue(questNum, this.phase) 
+            }
+        }
+        if (this.phase == 2){
+            this.closePopupDialogue();
+            if(this.measurementList.length >= 5){
+
+                // preprocess the dialogues
+                console.log(this.texts)
+
+                sstd = jStat.stdev(this.measurementList, true);
+
+                tx0 = this.texts[0] + sstd.toString();
+                this.texts[0] = tx0;
+                tx1 = this.texts[1] + (sstd/Math.sqrt(this.measurementList.length)).toString();
+                this.texts[1] = tx1;
+                this.phase = this.phase + 1 
+            }
+            
+        }
+
+        if (this.phase == 3) {
+            this.closePopupDialogue();
+            if(this.measurementList.length >= 5){
+
+                game.paused = true;
+                this.processDialogue();
+
+                if(this.texts.length == 0){
+                    game.paused = false;
+                    this.phase = this.phase + 1;
+                    this.loadDialogue(questNum, this.phase) 
+                    this.measurementList = []
+                }
+            }
+        }
+
+        if (this.phase == 4){
+            this.closePopupDialogue();
+            if(this.measurementList.length >= 9){
+
+
+                deltaReputation = 2 
+                game.totalReputation = Math.min(game.maxReputation, game.totalReputation + deltaReputation)
+                console.log("reputation gained: " +  deltaReputation)
+
+                this.phase = this.phase + 1 
+                
+            }
+            
+        }
+
+        if (this.phase == 5) {
+            this.closePopupDialogue();
+
+
+
+            if(this.measurementList.length >= 9  ){
+
+                game.paused = true;
+                this.processDialogue();
+
+                if(this.texts.length == 0){
+                    game.paused = false;
+                    this.phase = this.phase + 1;
+
+                }
+            }
+        }
+
+        if (this.phase == 6){
+            this.closePopupDialogue();
+        }
     },
 
     quest3: function(){
