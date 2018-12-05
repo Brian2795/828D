@@ -30,6 +30,9 @@ var menuState = {
 			this.openPopupWindow(performanceSummary);
 			delete game['levelResult'];
 		}
+		game.kineticScrolling.start();
+		
+
 		/*
 		game.levelResult = {
             popMean: this.populationMean,
@@ -139,6 +142,8 @@ var menuState = {
 		for (i = 0; i < game.grantsAvailable.length; i++) {
 			this.addGrantCard(game.grantsAvailable[i]);
 		}
+		// Adjust game world bounds for kinetic scroll
+		game.world.setBounds(0, 0, this.game.width, 200+150 * game.grantsAvailable.length);
 		console.log("Toggled to grants.");
 		console.log(game.grantsAvailable);
 	},
@@ -153,6 +158,8 @@ var menuState = {
 		for (i = 0; i < game.projectsOngoing.length; i++) {
 			this.addProjectCard(game.projectsOngoing[i]);
 		}
+		// Adjust game world bounds for kinetic scroll
+		game.world.setBounds(0, 0, this.game.width, 200+150*game.projectsOngoing.length);
 		console.log("Toggled to projects.");
 		console.log(game.projectsOngoing);
 	},
@@ -225,6 +232,7 @@ var menuState = {
 		this.optionCount ++;
 		this.menuGroup.add(titleText);
 		this.menuGroup.add(detailText);
+		
 	},
 
 
@@ -243,6 +251,8 @@ var menuState = {
 		this.optionCount ++;
 		this.menuGroup.add(titleText);
 		this.menuGroup.add(detailText);
+		game.world.setBounds(0, 0, this.game.width, this.game.height + 1000);
+
 	},
 
 

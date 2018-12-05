@@ -36,6 +36,17 @@ var welcomeState = {
 		game.load.script('WebFont', 'js/lib/webfontloader.js');
 		game.load.script('HealthBar', 'js/lib/HealthBar.standalone.js');
 		game.load.script('jstat', 'js/lib/jstat.min.js');
+		game.kineticScrolling = game.plugins.add(Phaser.Plugin.KineticScrolling);
+		
+		game.kineticScrolling.configure({
+			kineticMovement: true,
+			timeConstantScroll: 325, //really mimic iOS
+			horizontalScroll: false,
+			verticalScroll: true,
+			horizontalWheel: false,
+			verticalWheel: true,
+			deltaWheel: 40
+		});
 	},
 
 
