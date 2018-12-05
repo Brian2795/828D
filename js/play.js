@@ -182,33 +182,10 @@ var playState = {
     },
 
 
-    initProjectDetailsDisplay: function() {
-        // project title
-        this.projectText = game.add.text(10, 48, this.projectTitle, {
-            font: '32px Arial',
-            fill: '000000',
-            align: 'left',
-        });
-        this.projectText.anchor.setTo(0, 0.5);
-        this.projectText.fixedToCamera = true;
-
-        // environment
-        this.envText = game.add.text(18, 84, this.envKey, {
-            font: '24px Arial',
-            fill: '000000',
-            align: 'left',
-        });
-        this.envText.anchor.setTo(0, 0.5);
-        this.envText.fixedToCamera = true;
-
-        // date
-        this.envText = game.add.text(18, 114, game.date.toDateString(), {
-            font: '20px Arial',
-            fill: '000000',
-            align: 'left',
-        });
-        this.envText.anchor.setTo(0, 0.5);
-        this.envText.fixedToCamera = true;
+    initProjectDetailsDisplay: function( xLoc=10, yLoc=48 ) {
+        this.createText(xLoc,yLoc,this.projectTitle,32,'left',0);               // project title
+        this.createText(xLoc+8,yLoc+36,this.envKey,24,'left',0);                // environment
+        this.createText(xLoc+8,yLoc+66,game.date.toDateString(),20,'left',0);    // date
     },
 
 
