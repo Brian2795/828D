@@ -222,6 +222,8 @@ var playState = {
             fill: '000000',
             align: 'left',
         });
+        this.objTextBase.stroke = "#ffffff";
+        this.objTextBase.strokeThickness = 3;
         this.objTextBase.anchor.setTo(0, 0.5);
         this.objTextBase.fixedToCamera = true;
 
@@ -231,6 +233,8 @@ var playState = {
             fill: '000000',
             align: 'left',
         });
+        this.objText.stroke = "#ffffff";
+        this.objText.strokeThickness = 3;
         this.objText.anchor.setTo(0, 0.5);
         this.objText.fixedToCamera = true;
     },
@@ -263,7 +267,10 @@ var playState = {
             font: font,
             fill: color,
             align: alignment,
+
         });
+        text.stroke = "#ffffff";
+        text.strokeThickness = 3;
 
         text.anchor.setTo(anchorX, anchorY);
         text.fixedToCamera = true
@@ -409,6 +416,8 @@ var playState = {
         this.dialogueState.popupText.anchor.set(0.5);
         this.dialogueState.popupText.visible = false;
         this.dialogueState.popupText.fixedToCamera = true;
+        this.dialogueState.popupText.stroke = "#ffffff";
+        this.dialogueState.popupText.strokeThickness = 3;
 
 
         this.dialogueState.spsp = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
@@ -434,6 +443,8 @@ var playState = {
         dialogueState.popupText.anchor.set(0.5)
         dialogueState.popupText.fixedToCamera = true;
         dialogueState.popupText.visible = true;
+        dialogueState.popupText.stroke = "#ffffff";
+        dialogueState.popupText.strokeThickness = 3;
         //  Create a tween that will pop-open the Dialogue, but only if it's not already tweening or open
         dialogueState.tween = game.add.tween(dialogueState.popup.scale).to({ x: 1, y: 1 }, 1000, Phaser.Easing.Elastic.Out, true);
         dialogueState.isPopupOpen = true; 
@@ -477,6 +488,8 @@ var playState = {
         this.dialogueState.popupText.x = Math.floor(this.dialogueState.popup.x );
         this.dialogueState.popupText.y = Math.floor(this.dialogueState.popup.y * 1.8);
         this.dialogueState.popupText.anchor.set(0.5)
+        this.dialogueState.popupText.stroke = "#ffffff";
+        this.dialogueState.popupText.strokeThickness = 3;
 
         //this.openPopupDialogue();
     },
