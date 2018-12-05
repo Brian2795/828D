@@ -31,7 +31,8 @@ var playState = {
 
         this.phase = 0;
         this.texts = [];
-        this.quest = Math.floor(Math.random() * 5);
+        console.log(game.quest);
+        this.quest = game.quest;//Math.floor(Math.random() * 5);
 
 
         this.dials = {0: {0: ["Hi, welcome to PI simulator. I am your PI", "We are, right now, studying the distribution of samples.", "Can you go collect some samples for me?", "Collect enough samples so that you can know your mean for sure!", ""], 
@@ -490,6 +491,10 @@ var playState = {
         return original_string
     },
 
+    updateGameQuestNum: function(){
+        game.quest = game.quest + 1;
+    }, 
+
     progDialogue: function (player, sample){
         // Provide me with a questNum!
         
@@ -594,6 +599,7 @@ var playState = {
                 if(this.texts.length == 0){
                     game.paused = false;
                     this.phase = this.phase + 1;
+                    this.updateGameQuestNum();
 
                 }
             }
@@ -687,6 +693,7 @@ var playState = {
                 if(this.texts.length == 0){
                     game.paused = false;
                     this.phase = this.phase + 1;
+                    this.updateGameQuestNum();
 
                 }
             }
@@ -779,6 +786,7 @@ var playState = {
                 if(this.texts.length == 0){
                     game.paused = false;
                     this.phase = this.phase + 1;
+                    this.updateGameQuestNum();
 
                 }
             }
@@ -867,6 +875,7 @@ var playState = {
                 if(this.texts.length == 0){
                     game.paused = false;
                     this.phase = this.phase + 1;
+                    this.updateGameQuestNum();
 
                 }
             }
@@ -931,6 +940,7 @@ var playState = {
                 if(this.texts.length == 0){
                     game.paused = false;
                     this.phase = this.phase + 1;
+                    this.updateGameQuestNum();
                 }
             }
         }
