@@ -40,9 +40,9 @@ var playState = {
                             "I want to assess the mean again. Collect more samples for me!", "I would like to collect as accurate mean as possible!", ""], 
                         4: ["Your current mean is: ", "The actual mean is: ", "Now, go back to the lab! ", ""]  },
 
-                    1:{0:["Hmm. I just discovered that the values of samples are different from each other.", "In order to publich a paper, we have to note this uncertainty numerically.", 
-                            "I would like you to collect some samples to measure this uncertainty", ""],
-                        2:["The uncertainty from your sample is:", "It is said that 65% of samples are within 1 uncertainty range.", "Now collect more samples that this value can be in 1 uncetainty range: ",
+                    1:{0:["Hmm. I just discovered that the values \nof samples are different from each other.", "In order to publich a paper,\nwe have to note this uncertainty numerically.", 
+                            "I would like you to collect some \nsamples to measure this uncertainty", ""],
+                        2:["The uncertainty from your sample is:", "It is said that 65% of samples \nare within 1 uncertainty range.", "Now collect more samples that this \nvalue can be in 1 uncetainty range: ",
                          "this may be not achievable, so feel free to go back to the lab! ",""],
                         4:["Thank you!", "Now, go back to the lab!", ""]},
                     
@@ -60,7 +60,7 @@ var playState = {
                         "In order to conclude statistical signficance, we need \nto show that the difference of two values is larger \nthan sqrt of sum of squares of uncertainty",
                         "if one value has very small uncertainty, the difference \nof two values must be bigger than the uncertainty.", 
                         "For our case, if a value is outside the confidence interval,\nthe difference of two values are statistically significant!",
-                        "Now, collect some samples that we can conclude the statistical significance.", "The previously study showed the samples has the mean of :", 
+                        "Now, collect some samples that we \ncan conclude the statistical significance.", "The previously study showed the samples has the mean of :", 
                         "I want to show that our samples has statistically \nsignificantly different mean from the previous study!", ""],
                         2:["Hmmm you proved the statistical significance!","We can finally publish the paper!", ""]
                     }};
@@ -492,7 +492,7 @@ var playState = {
     },
 
     updateGameQuestNum: function(){
-        game.quest = game.quest + 1;
+        game.quest = (game.quest + 1)%5;
     }, 
 
     progDialogue: function (player, sample){
@@ -548,7 +548,7 @@ var playState = {
 
                 // preprocess the dialogues
                 console.log(this.texts)
-                tx0 = this.texts[0] + jStat.mean(this.measurementList).toString();
+                tx0 = this.texts[0] + this.roundToXDigits(jStat.mean(this.measurementList),2).toString();
                 this.texts[0] = tx0;
                 tx1 = this.texts[1] + this.populationMean.toString();
                 this.texts[1] = tx1;
