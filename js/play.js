@@ -59,9 +59,16 @@ var playState = {
                         "In order to conclude statistical signficance, we need \nto show that the difference of two values is larger \nthan sqrt of sum of squares of uncertainty",
                         "if one value has very small uncertainty, the difference \nof two values must be bigger than the uncertainty.", 
                         "For our case, if a value is outside the confidence interval,\nthe difference of two values are statistically significant!",
-                        "Now, collect some samples that we can conclude the statistical significance.", "The previously collected sample has the mean:", ""],
+                        "Now, collect some samples that we can conclude the statistical significance.", "The previously study showed the samples has the mean of :", 
+                        "I want to show that our samples has statistically \nsignificantly different mean from the previous study!", ""],
                         2:["Hmmm you proved the statistical significance!","We can finally publish the paper!", ""]
                     }};
+
+        this.objectives = {0: {2: "collect 5 samples to compute a trial mean.", 4: "collect enough samples to compute an accurate mean"},
+                            1: {2:"collect 5 samples to compute a trial uncertainty.", 4:"collect enough samples so that {0} can be within 1 uncertainty."},
+                            2: {2:"collect 5 samples to compute a population mean.", 4:"collect enough samples so that your sample uncertainty is\n3 times greater than your population uncertainty."} ,
+                            3: {2:"collect 5 samples to examine the behavior of confidence internval." , 4:"collect enough samples so that C.I intervals < sample stdev."},
+                            4: {2:"collect enough samples so that {0} value is \nsignificantly different from the population mean."} }
     },
 
 
@@ -126,7 +133,11 @@ var playState = {
         this.initProjectDetailsDisplay();
         this.initFundingDisplay();
         this.initSampleDataDisplay();
+
+        this.initObjectiveDisplay();
+
         this.initStatsDisplay();
+
         this.roundSpend = 0;
     },
 
@@ -201,6 +212,26 @@ var playState = {
         this.createText(xLoc,yLoc,this.projectTitle,32,'left',0);               // project title
         this.createText(xLoc+8,yLoc+36,envText,24,'left',0);                    // environment
         this.createText(xLoc+8,yLoc+66,game.date.toDateString(),20,'left',0);   // date
+    },
+
+    initObjectiveDisplay: function(){
+        // date
+        this.objTextBase = game.add.text(18, 150, "objective: ", {
+            font: '20px Arial',
+            fill: '000000',
+            align: 'left',
+        });
+        this.objTextBase.anchor.setTo(0, 0.5);
+        this.objTextBase.fixedToCamera = true;
+
+
+        this.objText = game.add.text(110, 150, "Walk to the supervisor", {
+            font: '20px Arial',
+            fill: '000000',
+            align: 'left',
+        });
+        this.objText.anchor.setTo(0, 0.5);
+        this.objText.fixedToCamera = true;
     },
 
 
@@ -376,6 +407,7 @@ var playState = {
         this.dialogueState.popupText = game.add.text(0, 0, "DEFAULT", style);
         this.dialogueState.popupText.anchor.set(0.5);
         this.dialogueState.popupText.visible = false;
+        this.dialogueState.popupText.fixedToCamera = true;
 
 
         this.dialogueState.spsp = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
@@ -399,7 +431,7 @@ var playState = {
         dialogueState.popupText.x = Math.floor(dialogueState.popup.x + dialogueState.popup.width / 2);
         dialogueState.popupText.y = Math.floor(dialogueState.popup.y + dialogueState.popup.height / 2);
         dialogueState.popupText.anchor.set(0.5)
-        
+        dialogueState.popupText.fixedToCamera = true;
         dialogueState.popupText.visible = true;
         //  Create a tween that will pop-open the Dialogue, but only if it's not already tweening or open
         dialogueState.tween = game.add.tween(dialogueState.popup.scale).to({ x: 1, y: 1 }, 1000, Phaser.Easing.Elastic.Out, true);
@@ -437,7 +469,10 @@ var playState = {
         newTxt = this.texts.shift();
         newTxt = newTxt == undefined ? null: newTxt +  "\nspace -- next dialogue";
 
-        this.dialogueState.popupText = game.add.text(game.camera.width / 2, game.camera.height / 2, newTxt,this.dialogueState.style);        
+
+        this.dialogueState.popupText = game.add.text(game.camera.width / 2, game.camera.height / 2, newTxt,this.dialogueState.style);
+        //this.dialogueState.popupText.fixedToCamera = true;
+
         this.dialogueState.popupText.x = Math.floor(this.dialogueState.popup.x );
         this.dialogueState.popupText.y = Math.floor(this.dialogueState.popup.y * 1.8);
         this.dialogueState.popupText.anchor.set(0.5)
@@ -445,6 +480,15 @@ var playState = {
         //this.openPopupDialogue();
     },
 
+
+
+    format: function( original_string, arguments ){
+
+        for (var k = 0; k < arguments.length; k++) {
+            original_string = original_string.replace("{" + k + "}", arguments[k])
+        }
+        return original_string
+    },
 
     progDialogue: function (player, sample){
         // Provide me with a questNum!
@@ -490,6 +534,7 @@ var playState = {
                 this.genSamples(20);
                 this.phase = this.phase + 1;
                 this.loadDialogue(questNum, this.phase) 
+                this.objText.setText( this.objectives[questNum][this.phase]  )
             }
         }
         if (this.phase == 2){
@@ -518,6 +563,7 @@ var playState = {
                     game.paused = false;
                     this.phase = this.phase + 1;
                     this.loadDialogue(questNum, this.phase) 
+                    this.objText.setText( this.objectives[questNum][this.phase]  )
                     this.measurementList = []
                 }
             }
@@ -526,8 +572,8 @@ var playState = {
         if (this.phase == 4){
             this.closePopupDialogue();
             if(this.measurementList.length >= 5){
-                // preprocess the dialogues
-                tx0 = this.texts[0] + jStat.mean(this.measurementList).toString();
+                // preprocess the dialogues   this.roundToXDigits(confInt[0],2)
+                tx0 = this.texts[0] +  this.roundToXDigits(jStat.mean(this.measurementList), 2).toString();
                 this.texts[0] = tx0;
                 //tx1 = "asdsaasda";
                 tx1 = this.texts[1] + this.populationMean.toString();
@@ -574,6 +620,7 @@ var playState = {
                 this.genSamples(20);
                 this.phase = this.phase + 1;
                 this.loadDialogue(questNum, this.phase) 
+                this.objText.setText( this.objectives[questNum][this.phase]  )
             }
         }
         if (this.phase == 2){
@@ -582,10 +629,10 @@ var playState = {
 
                 // preprocess the dialogues
                 console.log(this.texts)
-                tx0 = this.texts[0] + jStat.stdev(this.measurementList, true).toString();
+                tx0 = this.texts[0] + this.roundToXDigits(jStat.stdev(this.measurementList, true),2).toString();
                 this.texts[0] = tx0;
-                this.questVar = this.populationMean + this.populationStdv/2
-                tx1 = this.texts[2] + (this.questVar).toString();
+                this.questVar = this.populationMean + this.populationStdv * 3 / 4
+                tx1 = this.texts[2] + (this.roundToXDigits(this.questVar, 2)).toString();
                 this.texts[2] = tx1;
                 this.phase = this.phase + 1 
             }
@@ -603,6 +650,9 @@ var playState = {
                     game.paused = false;
                     this.phase = this.phase + 1;
                     this.loadDialogue(questNum, this.phase) 
+                    this.objText.setText(  this.format(  this.objectives[questNum][this.phase], [this.roundToXDigits(this.questVar, 2).toString()]      )   )
+
+                    //this.objText.setText( (this.objectives[questNum][this.phase]).format( (this.roundToXDigits(this.questVar),2).toString() ))  
                     this.measurementList = []
                 }
             }
@@ -663,6 +713,7 @@ var playState = {
                 this.genSamples(20);
                 this.phase = this.phase + 1;
                 this.loadDialogue(questNum, this.phase) 
+                this.objText.setText( this.objectives[questNum][this.phase]  )
             }
         }
         if (this.phase == 2){
@@ -674,9 +725,9 @@ var playState = {
 
                 sstd = jStat.stdev(this.measurementList, true);
 
-                tx0 = this.texts[0] + sstd.toString();
+                tx0 = this.texts[0] + this.roundToXDigits(sstd,2).toString();
                 this.texts[0] = tx0;
-                tx1 = this.texts[1] + (sstd/Math.sqrt(this.measurementList.length)).toString();
+                tx1 = this.texts[1] + this.roundToXDigits((sstd/Math.sqrt(this.measurementList.length)),2).toString();
                 this.texts[1] = tx1;
                 this.phase = this.phase + 1 
             }
@@ -694,6 +745,7 @@ var playState = {
                     game.paused = false;
                     this.phase = this.phase + 1;
                     this.loadDialogue(questNum, this.phase) 
+                    this.objText.setText( this.objectives[questNum][this.phase]  )
                     this.measurementList = []
                 }
             }
@@ -753,6 +805,7 @@ var playState = {
                 this.genSamples(20);
                 this.phase = this.phase + 1;
                 this.loadDialogue(questNum, this.phase) 
+                this.objText.setText( this.objectives[questNum][this.phase]  )
             }
         }
         if (this.phase == 2){
@@ -778,6 +831,7 @@ var playState = {
                     game.paused = false;
                     this.phase = this.phase + 1;
                     this.loadDialogue(questNum, this.phase) 
+                    this.objText.setText( this.objectives[questNum][this.phase]  )
                     this.measurementList = []
                 }
             }
@@ -829,7 +883,7 @@ var playState = {
             this.loadDialogue(questNum, this.phase)    
 
             this.questVar = this.populationMean + this.populationStdv * 0.5
-
+            //
             tx6 = this.texts[6] + this.questVar.toString();
             this.texts[6] = tx6;
 
@@ -846,6 +900,7 @@ var playState = {
                 this.genSamples(20);
                 this.phase = this.phase + 1;
                 this.loadDialogue(questNum, this.phase) 
+                this.objText.setText(   this.format(   this.objectives[questNum][this.phase], [this.questVar] )  )
             }
         }
         if (this.phase == 2){
