@@ -234,10 +234,18 @@ var menuState = {
 		var details = grant.description + '\nDifficulty: ' + grant.recommendedRep
 			+ '\nAvailable Funding: ' + grant.maxFunding 
 			+ '\nProposal Deadline: ' + grant.propDeadline.toDateString();
-		var callback = function() { grant.apply(); };
+		
 
 		var titleText = game.add.text(xLoc, yLocTitle, grant.providor, style.navitem.default);
 		var detailText = game.add.text(xLoc, yLocDetails, details, style.navitem.subtitle);
+		
+		var callback = function () {
+			if (titleText.text != "Grant Obtained!") {
+				grant.apply();
+			}
+			titleText.setText("Grant Obtained!");
+		};
+
 		this.createTextButton(titleText, grant.providor, 'Submit Proposal', callback);
 
 		this.optionCount ++;
@@ -271,13 +279,17 @@ var menuState = {
 		text.inputEnabled = true;
 		
 		text.events.onInputOver.add(function (target) {
-		  target.setStyle(style.navitem.hover);
-		  target.setText(hoverString);
+			if (target.text != "Grant Obtained!") {
+				target.setStyle(style.navitem.hover);
+				target.setText(hoverString);
+			}
 		});
 
 		text.events.onInputOut.add(function (target) {
-		  target.setStyle(style.navitem.default);
-		  target.setText(originalString);
+			if (target.text != "Grant Obtained!") {
+				target.setStyle(style.navitem.default);
+				target.setText(originalString);
+			}
 		});
 
 		text.events.onInputUp.add(callback);
