@@ -311,15 +311,19 @@ var playState = {
 
 
     clickReturnButton: function() {
-        deltaReputation = 2 - Math.min(4, Math.abs(  (jStat.mean(this.measurementList) - this.populationMean)/this.populationStdv));
-        game.totalReputation = Math.min(game.maxReputation, game.totalReputation + deltaReputation)
+        var deltaReputation = 0;
+        if (this.measurementList.length > 0){
+            deltaReputation = 2 - Math.min(4, Math.abs(  (jStat.mean(this.measurementList) - this.populationMean)/this.populationStdv));
+            game.totalReputation = Math.min(game.maxReputation, game.totalReputation + deltaReputation)
+        }
         
         console.log("reputation gained: " +  deltaReputation)
         game.levelResult = {
             popMean: this.populationMean,
             popStDev: this.populationStdv,
             sampleMean: jStat.mean(this.measurementList),
-            reputationChange: deltaReputation
+            reputationChange: deltaReputation,
+            hasCollectedAtLeastOneSample: this.measurementList.length > 0
         }
         game.state.start('menu');
         console.log("Return button was clicked");
