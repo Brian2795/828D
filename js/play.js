@@ -172,6 +172,18 @@ var playState = {
     },
 
 
+    initKeyMapping: function() {
+        this.upKey = game.input.keyboard.addKey(Phaser.Keyboard.UP);
+        this.downKey = game.input.keyboard.addKey(Phaser.Keyboard.DOWN);
+        this.leftKey = game.input.keyboard.addKey(Phaser.Keyboard.LEFT);
+        this.rightKey = game.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
+        this.wKey = game.input.keyboard.addKey(Phaser.Keyboard.W);
+        this.aKey = game.input.keyboard.addKey(Phaser.Keyboard.A);
+        this.sKey = game.input.keyboard.addKey(Phaser.Keyboard.S);
+        this.dKey = game.input.keyboard.addKey(Phaser.Keyboard.D);
+    },
+
+
     initMenu: function() {
         this.menuBar = new Phaser.Rectangle(0, 0, game.width, 64);
         this.settingsButton = game.add.button(game.width-50, 24, 'settings-cog', this.clickSettingsButton, this, 0, 0, 0);
@@ -183,9 +195,12 @@ var playState = {
 
 
     initProjectDetailsDisplay: function( xLoc=10, yLoc=48 ) {
+        var envText = String(this.envKey);
+        envText = envText.charAt(0).toUpperCase() + envText.slice(1);
+        
         this.createText(xLoc,yLoc,this.projectTitle,32,'left',0);               // project title
-        this.createText(xLoc+8,yLoc+36,this.envKey,24,'left',0);                // environment
-        this.createText(xLoc+8,yLoc+66,game.date.toDateString(),20,'left',0);    // date
+        this.createText(xLoc+8,yLoc+36,envText,24,'left',0);                    // environment
+        this.createText(xLoc+8,yLoc+66,game.date.toDateString(),20,'left',0);   // date
     },
 
 
@@ -198,18 +213,6 @@ var playState = {
     initSampleDataDisplay: function( xLoc=game.width-18, yLoc=72 ) {
         this.numSamplesText = this.createText(xLoc,yLoc,'',24,'right',1,0);
         this.samplesText = this.createText(xLoc,yLoc+36,'',18,'right',1,0);
-    },
-    
-
-    initKeyMapping: function() {
-        this.upKey = game.input.keyboard.addKey(Phaser.Keyboard.UP);
-        this.downKey = game.input.keyboard.addKey(Phaser.Keyboard.DOWN);
-        this.leftKey = game.input.keyboard.addKey(Phaser.Keyboard.LEFT);
-        this.rightKey = game.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
-        this.wKey = game.input.keyboard.addKey(Phaser.Keyboard.W);
-        this.aKey = game.input.keyboard.addKey(Phaser.Keyboard.A);
-        this.sKey = game.input.keyboard.addKey(Phaser.Keyboard.S);
-        this.dKey = game.input.keyboard.addKey(Phaser.Keyboard.D);
     },
 
 
@@ -430,9 +433,7 @@ var playState = {
         newTxt = this.texts.shift();
         newTxt = newTxt == undefined ? null: newTxt +  "\nspace -- next dialogue";
 
-
-        this.dialogueState.popupText = game.add.text(game.camera.width / 2, game.camera.height / 2, newTxt,this.dialogueState.style);
-        
+        this.dialogueState.popupText = game.add.text(game.camera.width / 2, game.camera.height / 2, newTxt,this.dialogueState.style);        
         this.dialogueState.popupText.x = Math.floor(this.dialogueState.popup.x );
         this.dialogueState.popupText.y = Math.floor(this.dialogueState.popup.y * 1.8);
         this.dialogueState.popupText.anchor.set(0.5)
