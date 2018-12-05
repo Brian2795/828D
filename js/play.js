@@ -577,7 +577,7 @@ var playState = {
         if (this.phase == 4){
             this.closePopupDialogue();
             if(this.measurementList.length >= 5){
-                // preprocess the dialogues   this.roundToXDigits(confInt[0],2)
+                // preprocess the dialogues
                 tx0 = this.texts[0] +  this.roundToXDigits(jStat.mean(this.measurementList), 2).toString();
                 this.texts[0] = tx0;
                 //tx1 = "asdsaasda";
