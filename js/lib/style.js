@@ -35,6 +35,12 @@ var style;
             fill: defaultColor
         }
     },
+    smallbasiclabel: {
+      default: {
+          font: '15pt Coolvetica',
+          fill: defaultColor
+      }
+    },
     quote: {
         default: {
             font: '20pt Blacksword',
