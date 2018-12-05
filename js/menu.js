@@ -205,11 +205,17 @@ var menuState = {
 		var sampleMean = levelResult.sampleMean;
 		var popStDev = levelResult.popStDev;
 		var repChange = levelResult.reputationChange;
-		var summary = "Mission complete! Here's how you did: The population mean was "
+		var hasCollectedAtLeastOneSample = levelResult.hasCollectedAtLeastOneSample;
+		var summary;
+		if (hasCollectedAtLeastOneSample) {
+			summary = "Mission complete! Here's how you did: The population mean was "
 			+ popMean.toFixed(2)+" with " + "a standard devation of "+popStDev.toFixed(2)
 			+ ". The mean of your sample was " + sampleMean.toFixed(2) 
 			+ ". Based on your performance, you've received a reputation change of " 
 			+ (repChange < 0 ? "" : "+") + repChange.toFixed(2)+"%!\n" + "~Press ESC to close~";
+		} else {
+			summary = "You didn't collect any samples! No reputation gained.\n~Press ESC to close~"
+		}
 		return summary;
 	},
 
@@ -228,10 +234,18 @@ var menuState = {
 		var details = grant.description + '\nDifficulty: ' + grant.recommendedRep
 			+ '\nAvailable Funding: ' + grant.maxFunding 
 			+ '\nProposal Deadline: ' + grant.propDeadline.toDateString();
-		var callback = function() { grant.apply(); };
+		
 
 		var titleText = game.add.text(xLoc, yLocTitle, grant.providor, style.navitem.default);
 		var detailText = game.add.text(xLoc, yLocDetails, details, style.navitem.subtitle);
+		
+		var callback = function () {
+			if (titleText.text != "Grant Obtained!") {
+				grant.apply();
+			}
+			titleText.setText("Grant Obtained!");
+		};
+
 		this.createTextButton(titleText, grant.providor, 'Submit Proposal', callback);
 
 		this.optionCount ++;
@@ -265,13 +279,17 @@ var menuState = {
 		text.inputEnabled = true;
 		
 		text.events.onInputOver.add(function (target) {
-		  target.setStyle(style.navitem.hover);
-		  target.setText(hoverString);
+			if (target.text != "Grant Obtained!") {
+				target.setStyle(style.navitem.hover);
+				target.setText(hoverString);
+			}
 		});
 
 		text.events.onInputOut.add(function (target) {
-		  target.setStyle(style.navitem.default);
-		  target.setText(originalString);
+			if (target.text != "Grant Obtained!") {
+				target.setStyle(style.navitem.default);
+				target.setText(originalString);
+			}
 		});
 
 		text.events.onInputUp.add(callback);
@@ -342,9 +360,9 @@ var menuState = {
 		var pop3 = game.populations['carrot'];
 
 		// Project( name, funding, population, recommendedRep )
-		var p1 = new Project('', pop1, env1, 10000, 20);
-		var p2 = new Project('', pop2, env1, 20000, 60);
-		var p3 = new Project('', pop3, env1, 50000, 100);
+		var p1 = new Project(null,'', pop1, env1, 10000, 20);
+		var p2 = new Project(null,'', pop2, env1, 20000, 60);
+		var p3 = new Project(null,'', pop3, env1, 50000, 100);
 
 		projects = [p1,p2,p3];
 		return projects;
