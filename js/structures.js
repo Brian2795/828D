@@ -1,27 +1,65 @@
-function ConfidenceInterval( xLoc, yLoc, lineWidth=240, lineHeight=3 ) {
-	this.xRel = xLoc - lineWidth/2;		// relative loc to camera 
-	this.yRel = yLoc - lineHeight/2;		// ..assuming anchor.setTo(.5,.5)
-	this.numberLine = new Phaser.Rectangle(this.xRel,this.yRel,lineWidth, lineHeight);
-	this.numberLineColor = 'rgba(0,0,0,1)';
-	this.intervalColor = 'rgba(100,100,0,1)';
+function ConfidenceInterval( population, xLoc, yLoc, lineWidth=240, lineHeight=4, intervalHeight=6, nlColor='rgba(0,0,0,1)', intervalColor='rgba(180,0,150,1)' ) {
+	this.population = population;
+	
+	this.xLocNl = xLoc - lineWidth/2;		// relative loc to camera 
+	this.yLocNl = yLoc - lineHeight/2;		// ..assuming anchor.setTo(.5,.5)
+	this.xLocInterval = this.xLocNl;
+	this.yLocInterval = yLoc - intervalHeight/2;
+
+
+	this.numberLine = new Phaser.Rectangle(this.xLocNl,this.yLocNl,lineWidth,lineHeight);
+	this.numberLineColor = nlColor;
+	this.interval = new Phaser.Rectangle(this.xLocInterval,this.yLocInterval,10,intervalHeight);
+	this.intervalColor = intervalColor;
+	
 }
 
 ConfidenceInterval.prototype = {
 	constructor: ConfidenceInterval,
 
-	getNlBounds: function() {
+	computeInterval: function( values ) {
+        var mean = jStat.mean(values);
+        var interval = jStat.tci(mean, 0.05, values);
+        interval[0] = Math.round(interval[0] * 100) / 100;
+        interval[1] = Math.round(interval[1] * 100) / 100;
+        return interval;
+    },
+
+
+   	getLocOfValue: function( val ) {
+   	/* Gets the physical x locations of a value on the numberLine given the 
+   	 * NL's bounding locations and min/max values 
+   	 */ 
+   	 	var boundLocs = this.getNlLocs;
+   	 	var boundLower = boundLocs[0];
+   	 	var boundUpper = boundLocs[1];
+   	 	var width = boundUpper - boundLower;
+   	 	var ratio = (val-this.minVal) / (this.maxVal-this.minVal);
+   	 	var valLoc = boundLower + ratio*width;
+   		return valLoc;
+   	},
+
+	getNlLocs: function() {
 	/* Returns the relative x locations of either side of the numberline
 	 */
 		return [xLocRel, xLocRel+numberLine.width];
 	},
 
-	setNlBoundVals: function( population, sampleVal, stdvs=3 ) {
-		this.minVal = sampleVal - population.stdv*stdvs;
-		this.maxVal = sampleVal + population.stdv*stdvs;
+	setNlVals: function( midVal, stdvs=3 ) {
+		this.minVal = midVal - this.population.stdv*stdvs;
+		this.maxVal = midVal + this.population.stdv*stdvs;
 		console.log(this.minVal)
 		console.log(this.maxVal)
 	},
 
+   	setInterval: function( values ) {
+   		// get the location and values of either side
+   		var interval = this.computeInterval(values);
+   		var locLower = this.getLocOfValue(interval[0]);
+   		var locUpper = this.getLocOfValue(interval[1]);
+   		this.interval.x = locLower;
+   		this.interval.width = locUpper - locLower;; 
+   	},
 }
 
 
