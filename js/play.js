@@ -19,7 +19,6 @@ var playState = {
 
 
     preload: function() {
-        this.graphics = game.add.graphics();
     },
 
 
@@ -94,6 +93,9 @@ var playState = {
         game.physics.arcade.overlap(this.player, this.samples, this.collectSample, null, this);
         game.physics.arcade.overlap(this.player, this.npcs, this.progDialogue, null, this);
         //game.physics.arcade.overlap(this.player, this.samples, this.collectsample, null, this);
+        
+        this.confInterval.numberLine.x = this.confInterval.xRel + game.camera.x;
+        this.confInterval.numberLine.y = this.confInterval.yRel + game.camera.y;
     },
 
 
@@ -104,6 +106,9 @@ var playState = {
         this.spendingText.setText('($' + String(this.roundSpend) + ')');
         this.numSamplesText.setText(this.measurementList.length + ' samples');
         this.samplesText.setText(this.genSamplesText());
+        game.debug.geom(this.confInterval.numberLine, this.confInterval.numberLineColor) ;
+        // this.rect.anchor.setTo(0.5, 0.5);
+        // this.rect.setScrollFactor(0);
     },
 
 
@@ -128,7 +133,11 @@ var playState = {
         this.initProjectDetailsDisplay();
         this.initFundingDisplay();
         this.initSampleDataDisplay();
+
         this.initObjectiveDisplay();
+
+        this.initStatsDisplay();
+
         this.roundSpend = 0;
     },
 
@@ -174,6 +183,18 @@ var playState = {
     },
 
 
+    initKeyMapping: function() {
+        this.upKey = game.input.keyboard.addKey(Phaser.Keyboard.UP);
+        this.downKey = game.input.keyboard.addKey(Phaser.Keyboard.DOWN);
+        this.leftKey = game.input.keyboard.addKey(Phaser.Keyboard.LEFT);
+        this.rightKey = game.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
+        this.wKey = game.input.keyboard.addKey(Phaser.Keyboard.W);
+        this.aKey = game.input.keyboard.addKey(Phaser.Keyboard.A);
+        this.sKey = game.input.keyboard.addKey(Phaser.Keyboard.S);
+        this.dKey = game.input.keyboard.addKey(Phaser.Keyboard.D);
+    },
+
+
     initMenu: function() {
         this.menuBar = new Phaser.Rectangle(0, 0, game.width, 64);
         this.settingsButton = game.add.button(game.width-50, 24, 'settings-cog', this.clickSettingsButton, this, 0, 0, 0);
@@ -184,33 +205,13 @@ var playState = {
     },
 
 
-    initProjectDetailsDisplay: function() {
-        // project title
-        this.projectText = game.add.text(10, 48, this.projectTitle, {
-            font: '32px Arial',
-            fill: '000000',
-            align: 'left',
-        });
-        this.projectText.anchor.setTo(0, 0.5);
-        this.projectText.fixedToCamera = true;
-
-        // environment
-        this.envText = game.add.text(18, 84, this.envKey, {
-            font: '24px Arial',
-            fill: '000000',
-            align: 'left',
-        });
-        this.envText.anchor.setTo(0, 0.5);
-        this.envText.fixedToCamera = true;
-
-        // date
-        this.envText = game.add.text(18, 114, game.date.toDateString(), {
-            font: '20px Arial',
-            fill: '000000',
-            align: 'left',
-        });
-        this.envText.anchor.setTo(0, 0.5);
-        this.envText.fixedToCamera = true;
+    initProjectDetailsDisplay: function( xLoc=10, yLoc=48 ) {
+        var envText = String(this.envKey);
+        envText = envText.charAt(0).toUpperCase() + envText.slice(1);
+        
+        this.createText(xLoc,yLoc,this.projectTitle,32,'left',0);               // project title
+        this.createText(xLoc+8,yLoc+36,envText,24,'left',0);                    // environment
+        this.createText(xLoc+8,yLoc+66,game.date.toDateString(),20,'left',0);   // date
     },
 
     initObjectiveDisplay: function(){
@@ -234,106 +235,45 @@ var playState = {
     },
 
 
-    initFundingDisplay: function() {
-        // total funding remaining
-        this.fundingText = game.add.text(game.world.centerX, 48, '', {
-            font: '48px Arial',
-            fill: '000000',
-            align: 'center',
-        });
-        this.fundingText.anchor.setTo(0.5, 0.5);
-        this.fundingText.fixedToCamera = true;
-
-        // total spent during this visit
-        this.spendingText = game.add.text(game.world.centerX, 92, '', {
-            font: '24px Arial',
-            fill: 'A9A9A9',
-            align: 'center',
-        });
-        this.spendingText.anchor.setTo(0.5, 0.5);
-        this.spendingText.fixedToCamera = true;
+    initFundingDisplay: function(xLoc=game.world.centerX, yLoc=48) {
+        this.fundingText = this.createText(xLoc,yLoc,'',48,'center');
+        this.spendingText = this.createText(xLoc,yLoc+44,'',24,'center');
     },
 
 
-    initSampleDataDisplay: function() {
-        // number of samples
-        this.numSamplesText = game.add.text(game.width-18, 84, '', {
-            font: '24px Arial',
-            fill: '000000',
-            align: 'right',
-        });
-        this.numSamplesText.anchor.setTo(1, 0.5);
-        this.numSamplesText.fixedToCamera = true;
-
-        // top 5 data samples
-        this.samplesText = game.add.text(game.width-18, 108, '', {
-            font: '18px Arial',
-            fill: '000000',
-            align: 'right',
-        });
-        this.samplesText.anchor.setTo(1, 0);
-        this.samplesText.fixedToCamera = true;
-
-
-        this.initConfidenceInterval();
-    },
-    
-
-    initKeyMapping: function() {
-        this.upKey = game.input.keyboard.addKey(Phaser.Keyboard.UP);
-        this.downKey = game.input.keyboard.addKey(Phaser.Keyboard.DOWN);
-        this.leftKey = game.input.keyboard.addKey(Phaser.Keyboard.LEFT);
-        this.rightKey = game.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
-        this.wKey = game.input.keyboard.addKey(Phaser.Keyboard.W);
-        this.aKey = game.input.keyboard.addKey(Phaser.Keyboard.A);
-        this.sKey = game.input.keyboard.addKey(Phaser.Keyboard.S);
-        this.dKey = game.input.keyboard.addKey(Phaser.Keyboard.D);
+    initSampleDataDisplay: function( xLoc=game.width-18, yLoc=72 ) {
+        this.numSamplesText = this.createText(xLoc,yLoc,'',24,'right',1,0);
+        this.samplesText = this.createText(xLoc,yLoc+36,'',18,'right',1,0);
     },
 
 
-    initConfidenceInterval: function() {
-        
-        this.graphics.lineStyle(2, 0x000000, 1);
-        this.graphics.drawRect(0, 0, 100, 100);
-
-        this.confidenceIntervalTitle = 
-        game.add.text(1150, 600, "95% Confidence Interval:", {
-            font: '20px Arial',
-            fill: '000000',
-            align: 'right',
-        });
-        this.confidenceIntervalTitle.anchor.setTo(0.5, 0.5);
-        this.confidenceIntervalTitle.fixedToCamera = true;
-
-        this.confidenceIntervalText = 
-        game.add.text(1150, 625, "[Not yet available]", {
-            font: '20px Arial',
-            fill: '000000',
-            align: 'right',
-        });
-        this.confidenceIntervalText.anchor.setTo(0.5, 0.5);
-        this.confidenceIntervalText.fixedToCamera = true;
-
-        this.meanText = 
-        game.add.text(1150, 650, "Sample mean: [N/A]", {
-            font: '20px Arial',
-            fill: '000000',
-            align: 'right',
-        });
-        this.meanText.anchor.setTo(0.5, 0.5);
-        this.meanText.fixedToCamera = true;
-
-        this.stDevText = 
-        game.add.text(1150, 675, "Sample StDev: [N/A]", {
-            font: '20px Arial',
-            fill: '000000',
-            align: 'right',
-        });
-        this.stDevText.anchor.setTo(0.5, 0.5);
-        this.stDevText.fixedToCamera = true;
+    initStatsDisplay: function( xLoc=1150, yLoc=600 ) {
+        this.createText(xLoc, yLoc, "95% Confidence Interval");
+        this.confidenceIntervalText = this.createText(xLoc, yLoc+25, "[Not yet available]");
+        this.meanText = this.createText(xLoc, yLoc+50, "Sample mean: [N/A]");
+        this.stDevText = this.createText(xLoc, yLoc+75, 'Sample StDev: [N/A]');
+        this.confInterval = new ConfidenceInterval(xLoc, yLoc+100);
     },
 
 
+    createText: function(xLoc, yLoc, content, fontSize=20, alignment='right', anchorX=0.5, anchorY=0.5, fontStyle='Arial', color='000000' ) {
+        var font = String(fontSize) + 'px ' + fontStyle;
+        var text = game.add.text(xLoc, yLoc, content, {
+            font: font,
+            fill: color,
+            align: alignment,
+        });
+
+        text.anchor.setTo(anchorX, anchorY);
+        text.fixedToCamera = true
+        return text;
+    },
+
+
+
+
+
+/* UPDATES & INTERACTIVE */
     genSamplesText: function( maxShown=5 ) {
         var listLen = this.measurementList.length;
         var numShown = Math.min(maxShown, listLen);
@@ -402,15 +342,19 @@ var playState = {
 
 
     clickReturnButton: function() {
-        deltaReputation = 2 - Math.min(4, Math.abs(  (jStat.mean(this.measurementList) - this.populationMean)/this.populationStdv));
-        game.totalReputation = Math.min(game.maxReputation, game.totalReputation + deltaReputation)
+        var deltaReputation = 0;
+        if (this.measurementList.length > 0){
+            deltaReputation = 2 - Math.min(4, Math.abs(  (jStat.mean(this.measurementList) - this.populationMean)/this.populationStdv));
+            game.totalReputation = Math.min(game.maxReputation, game.totalReputation + deltaReputation)
+        }
         
         console.log("reputation gained: " +  deltaReputation)
         game.levelResult = {
             popMean: this.populationMean,
             popStDev: this.populationStdv,
             sampleMean: jStat.mean(this.measurementList),
-            reputationChange: deltaReputation
+            reputationChange: deltaReputation,
+            hasCollectedAtLeastOneSample: this.measurementList.length > 0
         }
         game.state.start('menu');
         console.log("Return button was clicked");
@@ -420,7 +364,7 @@ var playState = {
     clickSettingsButton: function() {
         console.log("Settings button was clicked");
     },
-    
+
 
     roundToXDigits: function(value, digits) {
         if(!digits){
@@ -435,7 +379,9 @@ var playState = {
 
 
 
-/* BEGIN DIALOGUE CODE HERE */
+
+
+/** BEGIN DIALOGUE CODE HERE **/
 
     initDialogueState: function() {
         this.dialogueState = {
@@ -526,6 +472,7 @@ var playState = {
 
         this.dialogueState.popupText = game.add.text(game.camera.width / 2, game.camera.height / 2, newTxt,this.dialogueState.style);
         //this.dialogueState.popupText.fixedToCamera = true;
+
         this.dialogueState.popupText.x = Math.floor(this.dialogueState.popup.x );
         this.dialogueState.popupText.y = Math.floor(this.dialogueState.popup.y * 1.8);
         this.dialogueState.popupText.anchor.set(0.5)

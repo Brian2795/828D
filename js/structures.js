@@ -1,3 +1,31 @@
+function ConfidenceInterval( xLoc, yLoc, lineWidth=240, lineHeight=3 ) {
+	this.xRel = xLoc - lineWidth/2;		// relative loc to camera 
+	this.yRel = yLoc - lineHeight/2;		// ..assuming anchor.setTo(.5,.5)
+	this.numberLine = new Phaser.Rectangle(this.xRel,this.yRel,lineWidth, lineHeight);
+	this.numberLineColor = 'rgba(0,0,0,1)';
+	this.intervalColor = 'rgba(100,100,0,1)';
+}
+
+ConfidenceInterval.prototype = {
+	constructor: ConfidenceInterval,
+
+	getNlBounds: function() {
+	/* Returns the relative x locations of either side of the numberline
+	 */
+		return [xLocRel, xLocRel+numberLine.width];
+	},
+
+	setNlBoundVals: function( population, sampleVal, stdvs=3 ) {
+		this.minVal = sampleVal - population.stdv*stdvs;
+		this.maxVal = sampleVal + population.stdv*stdvs;
+		console.log(this.minVal)
+		console.log(this.maxVal)
+	},
+
+}
+
+
+
 function Environment( key, tilemap, tiles, moveMultiplier=1, prodMultiplier=1 ) {
 	this.key = key;							// keyword of the tilemap used by the environment
 	this.tilemap = tilemap;					// name of the tilemap file used by this environment 	
@@ -79,6 +107,7 @@ Grant.prototype = {
 
 
 
+
 function Population( key, mean, stdv, units, processCost, sprite, prodPeriod=1 ) {
 	this.key = key;
 	this.mean = mean;
@@ -138,7 +167,10 @@ Project.prototype = {
 	getTotalProjectCount: function() {
 		return game.projectsOngoing.length + game.projectsCompleted.length 
 			+ game.projectsRejected.length + 1;
-	}
+	},
 }
+
+
+
 
 
