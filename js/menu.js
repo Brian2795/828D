@@ -22,6 +22,7 @@ var menuState = {
 		this.initMissionList();
 		// this.getLevelResult();
 		this.initPopupState();
+		this.addTutorialLink();
 
 
 		// Should put implement this logic in init() as a trigger on the input value
@@ -212,7 +213,11 @@ var menuState = {
 		return summary;
 	},
 
-
+	addTutorialLink: function() {
+		var tutorialText = game.add.text(50, game.world.height - 5, "Tutorial", style.navitem.default);
+		var callback = function() { game.state.start('tutorial'); };
+		this.createTextButton(tutorialText, "Tutorial", 'Tutorial', callback);
+	},
 
 
 /* TERTIARY HELPERS */

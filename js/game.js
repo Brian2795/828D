@@ -4,6 +4,7 @@ game.state.add('boot', bootState);
 game.state.add('welcome', welcomeState);
 game.state.add('menu', menuState);
 game.state.add('play', playState);
+game.state.add('tutorial', tutorialState);
 
 game.totalFunding = 100000;
 game.maxFunding = 1000000;
