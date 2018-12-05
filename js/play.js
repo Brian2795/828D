@@ -19,6 +19,7 @@ var playState = {
 
 
     preload: function() {
+        this.graphics = game.add.graphics();
     },
 
 
@@ -27,7 +28,7 @@ var playState = {
         this.initMeta();
         this.createPlayer();
         this.initDialogueState();
-        this.initConfidenceInterval();
+        
 
         this.phase = 0;
         this.texts = [];
@@ -104,22 +105,23 @@ var playState = {
 
 
 
-/* BEGIN EXPLICITLY CALLED FUNCTIONS HERE */
+/** BEGIN EXPLICITLY CALLED FUNCTIONS HERE **/
 
+/* PRIMARY INSTANTIATIONS */
     initWorld: function() {
         this.initMap();
         this.initNpcs();
         this.initSamples();
+        this.initKeyMapping();
     },
 
 
     initMeta: function() {
         this.initMenu();
-        this.initStaticInfo();
-        this.initDynamicInfo();
-        this.initKeyMapping();
+        this.initProjectDetailsDisplay();
+        this.initFundingDisplay();
+        this.initSampleDataDisplay();
         this.roundSpend = 0;
-
     },
 
 
@@ -136,6 +138,9 @@ var playState = {
     },
 
 
+
+
+/* SECONDARY INSTANTIATIONS */
     initMap: function() {
         this.map = game.add.tilemap(this.envTilemap);
         console.log(this.envTilemap);
@@ -163,15 +168,15 @@ var playState = {
 
     initMenu: function() {
         this.menuBar = new Phaser.Rectangle(0, 0, game.width, 64);
-        this.settingsButton = game.add.button(game.width-50, 24, 'settings-cog', this.onClickSettingsButton, this, 0, 0, 0);
-        this.returnButton = game.add.button(game.width-100, 24, 'home-button', this.onClickReturnButton, this, 0, 0, 0);
+        this.settingsButton = game.add.button(game.width-50, 24, 'settings-cog', this.clickSettingsButton, this, 0, 0, 0);
+        this.returnButton = game.add.button(game.width-100, 24, 'home-button', this.clickReturnButton, this, 0, 0, 0);
         
         this.settingsButton.fixedToCamera = true;
         this.returnButton.fixedToCamera = true;
     },
 
 
-    initStaticInfo: function() {
+    initProjectDetailsDisplay: function() {
         // project title
         this.projectText = game.add.text(10, 48, this.projectTitle, {
             font: '32px Arial',
@@ -201,7 +206,7 @@ var playState = {
     },
 
 
-    initDynamicInfo: function() {
+    initFundingDisplay: function() {
         // total funding remaining
         this.fundingText = game.add.text(game.world.centerX, 48, '', {
             font: '48px Arial',
@@ -219,7 +224,10 @@ var playState = {
         });
         this.spendingText.anchor.setTo(0.5, 0.5);
         this.spendingText.fixedToCamera = true;
+    },
 
+
+    initSampleDataDisplay: function() {
         // number of samples
         this.numSamplesText = game.add.text(game.width-18, 84, '', {
             font: '24px Arial',
@@ -237,6 +245,9 @@ var playState = {
         });
         this.samplesText.anchor.setTo(1, 0);
         this.samplesText.fixedToCamera = true;
+
+
+        this.initConfidenceInterval();
     },
     
 
@@ -252,39 +263,11 @@ var playState = {
     },
 
 
-    genSamplesText: function( maxShown=5 ) {
-        var listLen = this.measurementList.length;
-        var numShown = Math.min(maxShown, listLen);
-        var samplesText = '';
-        for (var i = 0; i < numShown; i++) {
-            samplesText += String(this.measurementList[listLen-i-1]) + this.sampleUnits + '\n';
-        }
-        return samplesText
-    },
-
-
-    onClickReturnButton: function() {
-        deltaReputation = 2 - Math.min(4, Math.abs(  (jStat.mean(this.measurementList) - this.populationMean)/this.populationStdv));
-        game.totalReputation = Math.min(game.maxReputation, game.totalReputation + deltaReputation)
-        
-        console.log("reputation gained: " +  deltaReputation)
-        game.levelResult = {
-            popMean: this.populationMean,
-            popStDev: this.populationStdv,
-            sampleMean: jStat.mean(this.measurementList),
-            reputationChange: deltaReputation
-        }
-        game.state.start('menu');
-        console.log("Return button was clicked");
-    },
-
-
-    onClickSettingsButton: function() {
-        console.log("Settings button was clicked");
-    },
-
-
     initConfidenceInterval: function() {
+        
+        this.graphics.lineStyle(2, 0x000000, 1);
+        this.graphics.drawRect(0, 0, 100, 100);
+
         this.confidenceIntervalTitle = 
         game.add.text(1150, 600, "95% Confidence Interval:", {
             font: '20px Arial',
@@ -323,15 +306,16 @@ var playState = {
     },
 
 
-    roundToXDigits: function(value, digits) {
-        if(!digits){
-            digits = 2;
+    genSamplesText: function( maxShown=5 ) {
+        var listLen = this.measurementList.length;
+        var numShown = Math.min(maxShown, listLen);
+        var samplesText = '';
+        for (var i = 0; i < numShown; i++) {
+            samplesText += String(this.measurementList[listLen-i-1]) + this.sampleUnits + '\n';
         }
-        value = value * Math.pow(10, digits);
-        value = Math.round(value);
-        value = value / Math.pow(10, digits);
-        return value;
+        return samplesText
     },
+
 
     computeConfidenceInterval: function() {
         var mean = jStat.mean(this.measurementList);
@@ -389,10 +373,36 @@ var playState = {
     },
 
 
-    genPopupText: function(dataValue) {
-        return "You found a\nBLUE " + this.sampleKey + "\nSize: "+dataValue+"mm\nPress ESC to continue"
+    clickReturnButton: function() {
+        deltaReputation = 2 - Math.min(4, Math.abs(  (jStat.mean(this.measurementList) - this.populationMean)/this.populationStdv));
+        game.totalReputation = Math.min(game.maxReputation, game.totalReputation + deltaReputation)
+        
+        console.log("reputation gained: " +  deltaReputation)
+        game.levelResult = {
+            popMean: this.populationMean,
+            popStDev: this.populationStdv,
+            sampleMean: jStat.mean(this.measurementList),
+            reputationChange: deltaReputation
+        }
+        game.state.start('menu');
+        console.log("Return button was clicked");
     },
 
+
+    clickSettingsButton: function() {
+        console.log("Settings button was clicked");
+    },
+    
+
+    roundToXDigits: function(value, digits) {
+        if(!digits){
+            digits = 2;
+        }
+        value = value * Math.pow(10, digits);
+        value = Math.round(value);
+        value = value / Math.pow(10, digits);
+        return value;
+    },
 
 
 
@@ -466,9 +476,16 @@ var playState = {
         dialogueState.isPopupOpen = false;
     },
 
+
     loadDialogue: function(questNum, phaseNum){
         this.texts = this.dials[questNum][phaseNum]        
     },
+
+
+    genPopupText: function(dataValue) {
+        return "You found a\nBLUE " + this.sampleKey + "\nSize: "+dataValue+"mm\nPress ESC to continue"
+    },
+
 
     processDialogue: function(){
         this.closePopupDialogue();
