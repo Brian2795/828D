@@ -19,7 +19,6 @@ var playState = {
 
 
     preload: function() {
-        this.graphics = game.add.graphics();
     },
 
 
@@ -87,6 +86,9 @@ var playState = {
         game.physics.arcade.overlap(this.player, this.samples, this.collectSample, null, this);
         game.physics.arcade.overlap(this.player, this.npcs, this.progDialogue, null, this);
         //game.physics.arcade.overlap(this.player, this.samples, this.collectsample, null, this);
+        
+        this.confInterval.numberLine.x = this.confInterval.xRel + game.camera.x;
+        this.confInterval.numberLine.y = this.confInterval.yRel + game.camera.y;
     },
 
 
@@ -97,6 +99,9 @@ var playState = {
         this.spendingText.setText('($' + String(this.roundSpend) + ')');
         this.numSamplesText.setText(this.measurementList.length + ' samples');
         this.samplesText.setText(this.genSamplesText());
+        game.debug.geom(this.confInterval.numberLine, this.confInterval.numberLineColor) ;
+        // this.rect.anchor.setTo(0.5, 0.5);
+        // this.rect.setScrollFactor(0);
     },
 
 
@@ -121,6 +126,7 @@ var playState = {
         this.initProjectDetailsDisplay();
         this.initFundingDisplay();
         this.initSampleDataDisplay();
+        this.initStatsDisplay();
         this.roundSpend = 0;
     },
 
@@ -206,48 +212,15 @@ var playState = {
     },
 
 
-    initFundingDisplay: function() {
-        // total funding remaining
-        this.fundingText = game.add.text(game.world.centerX, 48, '', {
-            font: '48px Arial',
-            fill: '000000',
-            align: 'center',
-        });
-        this.fundingText.anchor.setTo(0.5, 0.5);
-        this.fundingText.fixedToCamera = true;
-
-        // total spent during this visit
-        this.spendingText = game.add.text(game.world.centerX, 92, '', {
-            font: '24px Arial',
-            fill: 'A9A9A9',
-            align: 'center',
-        });
-        this.spendingText.anchor.setTo(0.5, 0.5);
-        this.spendingText.fixedToCamera = true;
+    initFundingDisplay: function(xLoc=game.world.centerX, yLoc=48) {
+        this.fundingText = this.createText(xLoc,yLoc,'',48,'center');
+        this.spendingText = this.createText(xLoc,yLoc+44,'',24,'center');
     },
 
 
-    initSampleDataDisplay: function() {
-        // number of samples
-        this.numSamplesText = game.add.text(game.width-18, 84, '', {
-            font: '24px Arial',
-            fill: '000000',
-            align: 'right',
-        });
-        this.numSamplesText.anchor.setTo(1, 0.5);
-        this.numSamplesText.fixedToCamera = true;
-
-        // top 5 data samples
-        this.samplesText = game.add.text(game.width-18, 108, '', {
-            font: '18px Arial',
-            fill: '000000',
-            align: 'right',
-        });
-        this.samplesText.anchor.setTo(1, 0);
-        this.samplesText.fixedToCamera = true;
-
-
-        this.initConfidenceInterval();
+    initSampleDataDisplay: function( xLoc=game.width-18, yLoc=72 ) {
+        this.numSamplesText = this.createText(xLoc,yLoc,'',24,'right',1,0);
+        this.samplesText = this.createText(xLoc,yLoc+36,'',18,'right',1,0);
     },
     
 
@@ -263,49 +236,33 @@ var playState = {
     },
 
 
-    initConfidenceInterval: function() {
-        
-        this.graphics.lineStyle(2, 0x000000, 1);
-        this.graphics.drawRect(0, 0, 100, 100);
-
-        this.confidenceIntervalTitle = 
-        game.add.text(1150, 600, "95% Confidence Interval:", {
-            font: '20px Arial',
-            fill: '000000',
-            align: 'right',
-        });
-        this.confidenceIntervalTitle.anchor.setTo(0.5, 0.5);
-        this.confidenceIntervalTitle.fixedToCamera = true;
-
-        this.confidenceIntervalText = 
-        game.add.text(1150, 625, "[Not yet available]", {
-            font: '20px Arial',
-            fill: '000000',
-            align: 'right',
-        });
-        this.confidenceIntervalText.anchor.setTo(0.5, 0.5);
-        this.confidenceIntervalText.fixedToCamera = true;
-
-        this.meanText = 
-        game.add.text(1150, 650, "Sample mean: [N/A]", {
-            font: '20px Arial',
-            fill: '000000',
-            align: 'right',
-        });
-        this.meanText.anchor.setTo(0.5, 0.5);
-        this.meanText.fixedToCamera = true;
-
-        this.stDevText = 
-        game.add.text(1150, 675, "Sample StDev: [N/A]", {
-            font: '20px Arial',
-            fill: '000000',
-            align: 'right',
-        });
-        this.stDevText.anchor.setTo(0.5, 0.5);
-        this.stDevText.fixedToCamera = true;
+    initStatsDisplay: function( xLoc=1150, yLoc=600 ) {
+        this.createText(xLoc, yLoc, "95% Confidence Interval");
+        this.confidenceIntervalText = this.createText(xLoc, yLoc+25, "[Not yet available]");
+        this.meanText = this.createText(xLoc, yLoc+50, "Sample mean: [N/A]");
+        this.stDevText = this.createText(xLoc, yLoc+75, 'Sample StDev: [N/A]');
+        this.confInterval = new ConfidenceInterval(xLoc, yLoc+100);
     },
 
 
+    createText: function(xLoc, yLoc, content, fontSize=20, alignment='right', anchorX=0.5, anchorY=0.5, fontStyle='Arial', color='000000' ) {
+        var font = String(fontSize) + 'px ' + fontStyle;
+        var text = game.add.text(xLoc, yLoc, content, {
+            font: font,
+            fill: color,
+            align: alignment,
+        });
+
+        text.anchor.setTo(anchorX, anchorY);
+        text.fixedToCamera = true
+        return text;
+    },
+
+
+
+
+
+/* UPDATES & INTERACTIVE */
     genSamplesText: function( maxShown=5 ) {
         var listLen = this.measurementList.length;
         var numShown = Math.min(maxShown, listLen);
@@ -392,7 +349,7 @@ var playState = {
     clickSettingsButton: function() {
         console.log("Settings button was clicked");
     },
-    
+
 
     roundToXDigits: function(value, digits) {
         if(!digits){
@@ -407,7 +364,9 @@ var playState = {
 
 
 
-/* BEGIN DIALOGUE CODE HERE */
+
+
+/** BEGIN DIALOGUE CODE HERE **/
 
     initDialogueState: function() {
         this.dialogueState = {
