@@ -50,7 +50,7 @@ function Grant( population, environment, recommendedRep, maxFunding ) {
 	this.minFunding = maxFunding / 2;
 
 	this.verb = game.titleVerbs[Math.floor(Math.random() * game.titleVerbs.length)];
-	this.providor = game.grantProvidors[Math.floor(Math.random() * game.grantProvidors.length)];
+	this.provider = game.grantProviders[Math.floor(Math.random() * game.grantProviders.length)];
 	this.startDate = new Date(game.date.toLocaleDateString());
 	this.propDeadline = this.genDeadline();			// deadline to submit a proposal
 	this.description = this.getDescription();
@@ -63,17 +63,16 @@ function Grant( population, environment, recommendedRep, maxFunding ) {
 Grant.prototype = {
 	constructor: Grant,	
 
-	apply: function() {
-	/* Generates a project with funding amount and a deadline. Funding generated 
-	 * based on the recommended reputation of the project and the reputation of
-	 * the player. Removes the current grant from the global list: grantsAvailable
-	 */
-		 var funding = this.calcProjectFunding();
-		 console.log("Providor is");
-		 console.log(this.providor);
-	 	var project = new Project(this.providor, this.description, this.population, this.environment, funding);
-	 	var grantIndex = game.grantsAvailable.indexOf(this);
-	 	game.grantsAvailable.splice(grantIndex, 1);
+	apply: function () {
+		/* Generates a project with funding amount and a deadline. Funding generated 
+		 * based on the recommended reputation of the project and the reputation of
+		 * the player. Removes the current grant from the global list: grantsAvailable
+		 */
+		var funding = this.calcProjectFunding();
+
+		var project = new Project(this.provider, this.description, this.population, this.environment, funding);
+		var grantIndex = game.grantsAvailable.indexOf(this);
+		game.grantsAvailable.splice(grantIndex, 1);
 		return project;
 	},
 

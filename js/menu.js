@@ -236,7 +236,7 @@ var menuState = {
 			+ '\nProposal Deadline: ' + grant.propDeadline.toDateString();
 		
 
-		var titleText = game.add.text(xLoc, yLocTitle, grant.providor, style.navitem.default);
+		var titleText = game.add.text(xLoc, yLocTitle, grant.provider, style.navitem.default);
 		var detailText = game.add.text(xLoc, yLocDetails, details, style.navitem.subtitle);
 		
 		var callback = function () {
@@ -246,7 +246,7 @@ var menuState = {
 			titleText.setText("Grant Obtained!");
 		};
 
-		this.createTextButton(titleText, grant.providor, 'Submit Proposal', callback);
+		this.createTextButton(titleText, grant.provider, 'Submit Proposal', callback);
 
 		this.optionCount ++;
 		this.menuGroup.add(titleText);
