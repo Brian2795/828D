@@ -360,9 +360,9 @@ var menuState = {
 		var pop3 = game.populations['carrot'];
 
 		// Project( name, funding, population, recommendedRep )
-		var p1 = new Project('', pop1, env1, 10000, 20);
-		var p2 = new Project('', pop2, env1, 20000, 60);
-		var p3 = new Project('', pop3, env1, 50000, 100);
+		var p1 = new Project(null,'', pop1, env1, 10000, 20);
+		var p2 = new Project(null,'', pop2, env1, 20000, 60);
+		var p3 = new Project(null,'', pop3, env1, 50000, 100);
 
 		projects = [p1,p2,p3];
 		return projects;

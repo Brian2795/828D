@@ -68,8 +68,10 @@ Grant.prototype = {
 	 * based on the recommended reputation of the project and the reputation of
 	 * the player. Removes the current grant from the global list: grantsAvailable
 	 */
-	 	var funding = this.calcProjectFunding();
-	 	var project = new Project(this.description, this.population, this.environment, funding);
+		 var funding = this.calcProjectFunding();
+		 console.log("Providor is");
+		 console.log(this.providor);
+	 	var project = new Project(this.providor, this.description, this.population, this.environment, funding);
 	 	var grantIndex = game.grantsAvailable.indexOf(this);
 	 	game.grantsAvailable.splice(grantIndex, 1);
 		return project;
@@ -126,7 +128,7 @@ Population.prototype = {
 
 
 
-function Project( description, population, environment, funding, exposure=1, duration=-1 ) {
+function Project(title, description, population, environment, funding, exposure=1, duration=-1 ) {
 	this.population = population;			
 	this.environment = environment;
 	this.funding = funding;					// amount of funding awarded for project
@@ -134,7 +136,14 @@ function Project( description, population, environment, funding, exposure=1, dur
 	
 
 	this.description = description;
-	this.title = 'Project #' + String(this.getTotalProjectCount());
+	console.log("Title is");
+	console.log(title);
+	if (title === null) {
+		this.title = 'Project #' + String(this.getTotalProjectCount());
+	} else {
+		this.title = title;
+	}
+	
 	this.startDate = new Date(game.date.toLocaleDateString());
 	this.deadline = this.genDeadline(duration);
 
