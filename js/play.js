@@ -936,7 +936,7 @@ var playState = {
             this.loadDialogue(questNum, this.phase)    
 
             this.questVar = this.populationMean + this.populationStdv * 0.5
-
+            //
             tx6 = this.texts[6] + this.questVar.toString();
             this.texts[6] = tx6;
 
