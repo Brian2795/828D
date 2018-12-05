@@ -53,8 +53,8 @@ var welcomeState = {
 	loadFonts: function() {
 		WebFontConfig = {
 		  custom: {
-			families: ['TheMinion', 'BigSnow', 'Blacksword'],
-			urls: ['assets/style/theminion.css', 'assets/style/bigsnow.css', 'assets/style/blacksword.css']
+			families: ['TheMinion', 'BigSnow', 'Blacksword', 'Coolvetica'],
+			urls: ['assets/style/theminion.css', 'assets/style/bigsnow.css', 'assets/style/blacksword.css', 'assets/style/coolvetica.css']
 		  }
 		}
 	},

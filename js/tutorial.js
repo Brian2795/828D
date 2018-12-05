@@ -9,6 +9,7 @@ var tutorialState = {
 		this.initBackground();
 		this.addHeader("Some header", 300, 300);
 		this.addBackButton();
+		this.addTextBody("Lorem ipsum dolor sit amet, consectetur \nadipiscing elit. Vivamus ac scelerisque ligula, nec eleifend sapien. Integer nibh sem, condimentum ut nulla nec, sodales ullamcorper mauris. Donec odio purus, placerat sit amet sapien id, tincidunt dapibus enim. Nam vel dolor tincidunt felis hendrerit interdum vel at leo. Aenean auctor libero euismod neque faucibus, sit amet finibus lorem gravida. Sed libero metus, eleifend sit amet sagittis eu, commodo quis elit.", 400, 400);
 	},
 
 	initBackground: function() {

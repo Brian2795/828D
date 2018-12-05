@@ -15,7 +15,7 @@ var style;
         strokeThickness: 4
       },
       subtitle: {
-        font: '10pt TheMinion',
+        font: '13pt Coolvetica',
         align: 'left',
         strokeThickness: 2,
         fill: defaultColor
@@ -31,7 +31,7 @@ var style;
     },
     basiclabel: {
         default: {
-            font: '20pt BigSnow',
+            font: '20pt Coolvetica',
             fill: defaultColor
         }
     },
