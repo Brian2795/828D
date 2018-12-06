@@ -117,12 +117,11 @@ Grant.prototype = {
 	constructor: Grant,	
 
 	apply: function () {
-		/* Generates a project with funding amount and a deadline. Funding generated 
-		 * based on the recommended reputation of the project and the reputation of
-		 * the player. Removes the current grant from the global list: grantsAvailable
-		 */
+	/* Generates a project with funding amount and a deadline. Funding generated 
+	 * based on the recommended reputation of the project and the reputation of
+	 * the player. Removes the current grant from the global list: grantsAvailable
+	 */
 		var funding = this.calcProjectFunding();
-
 		var project = new Project(this.provider, this.description, this.population, this.environment, funding);
 		var grantIndex = game.grantsAvailable.indexOf(this);
 		game.grantsAvailable.splice(grantIndex, 1);
