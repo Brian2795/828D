@@ -190,10 +190,8 @@ var menuState = {
 
 
 	addGrantList: function( titleText='Available Grants' ) {
-		var title = game.add.text(game.width-500, 100, titleText, style.navitem.hover);
+		//var title = game.add.text(game.width-500, 100, titleText, style.navitem.hover);
 		this.currentOptionState = this.optionStateEnum.GRANTS;
-		//this.grantsMissionsButton.setFrames(1,1,1);
-		this.menuGroup.add(title);
 		
 		for (i = 0; i < game.grantsAvailable.length; i++) {
 			this.addGrantCard(game.grantsAvailable[i]);
@@ -201,15 +199,11 @@ var menuState = {
 		// Adjust game world bounds for kinetic scroll
 		game.world.setBounds(0, 0, this.game.width, 200+150 * game.grantsAvailable.length);
 		console.log("Toggled to grants.");
-		// console.log(game.grantsAvailable);
 	},
 
 
 	addProjectList: function( titleText='Ongoing Projects' ) {
-		var title = game.add.text(game.width-500, 100, titleText, style.navitem.hover);
 		this.currentOptionState = this.optionStateEnum.MISSIONS;
-		//this.grantsMissionsButton.setFrames(2,2,2);
-		this.menuGroup.add(title);
 
 		for (i = 0; i < game.projectsOngoing.length; i++) {
 			this.addProjectCard(game.projectsOngoing[i]);
@@ -416,25 +410,27 @@ var menuState = {
 		this.currentOptionState = this.optionStateEnum.MISSIONS;
 
 		//this.grantsMissionsButton = game.add.button(800, 30, 'grants-missions-toggle', this.toggleGrantsMissions, this, 2, 2, 2);
-		var showGrantsText = game.add.text(1050, 30, "Grants", style.navitem.default);
-		var showMissionsText = game.add.text(800, 30, "Missions", style.navitem.hover);
-		var slashText = game.add.text(1015, 30, "/", style.navitem.default);
+		var showGrantsText = game.add.text(1050, 100, "Grants", style.navitem.default);
+		var showMissionsText = game.add.text(800, 100, "Missions", style.navitem.hover);
+		var slashText = game.add.text(1015, 100, "/", style.navitem.default);
 		var showGrantsCallback = function() { 
 			console.log("This");
 			console.log(this);
-			if (this.currentOptionState != this.menuState.optionStateEnum.GRANTS) {
+			if (this.menuState.currentOptionState != this.menuState.optionStateEnum.GRANTS) {
 				this.menuState.toggleGrantsMissions();
 				this.menuState.createTextButton(showGrantsText, "Grants", 'Grants', showGrantsCallback, style.navitem.hover,style.navitem.hover);
 				this.menuState.createTextButton(showMissionsText, "Missions", 'Missions', showMissionsCallback,style.navitem.hover,style.navitem.default);
 				showMissionsText.setStyle(style.navitem.default);
+				this.menuState.currentOptionState = this.menuState.optionStateEnum.GRANTS
 			}
 		};
 		var showMissionsCallback = function() { 
-			if (this.currentOptionState != this.menuState.optionStateEnum.MISSIONS) {
+			if (this.menuState.currentOptionState != this.menuState.optionStateEnum.MISSIONS) {
 				this.menuState.toggleGrantsMissions();
 				this.menuState.createTextButton(showGrantsText, "Grants", 'Grants', showGrantsCallback, style.navitem.hover,style.navitem.default);
 				this.menuState.createTextButton(showMissionsText, "Missions", 'Missions', showMissionsCallback,style.navitem.hover,style.navitem.hover);			
 				showGrantsText.setStyle(style.navitem.default);
+				this.menuState.currentOptionState = this.menuState.optionStateEnum.MISSIONS
 			}
 		};
 		this.createTextButton(showGrantsText, "Grants", 'Grants', showGrantsCallback,style.navitem.hover,style.navitem.default);
