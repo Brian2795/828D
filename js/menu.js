@@ -205,7 +205,7 @@ var menuState = {
 			this.addGrantCard(game.grantsAvailable[i]);
 		}
 		// Adjust game world bounds for kinetic scroll
-		game.world.setBounds(0, 0, this.game.width, 200+150 * game.grantsAvailable.length);
+		game.world.setBounds(0, 0, this.game.width, 200+180 * game.grantsAvailable.length);
 		console.log("Toggled to grants.");
 	},
 
