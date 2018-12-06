@@ -6,7 +6,7 @@ game.state.add('menu', menuState);
 game.state.add('play', playState);
 game.state.add('tutorial', tutorialState);
 
-game.totalFunding = 1000;
+game.totalFunding = 10000;
 game.maxFunding = 1000000;
 game.totalReputation = 30;
 game.maxReputation = 100;
