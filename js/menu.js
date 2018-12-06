@@ -410,9 +410,9 @@ var menuState = {
 		this.currentOptionState = this.optionStateEnum.MISSIONS;
 
 		//this.grantsMissionsButton = game.add.button(800, 30, 'grants-missions-toggle', this.toggleGrantsMissions, this, 2, 2, 2);
-		var showGrantsText = game.add.text(1050, 100, "Grants", style.navitem.default);
-		var showMissionsText = game.add.text(800, 100, "Missions", style.navitem.hover);
-		var slashText = game.add.text(1015, 100, "/", style.navitem.default);
+		var showGrantsText = game.add.text(1030, 100, "Grants", style.navitem.default);
+		var showMissionsText = game.add.text(780, 100, "Missions", style.navitem.hover);
+		var slashText = game.add.text(995, 100, "/", style.navitem.default);
 		var showGrantsCallback = function() { 
 			console.log("This");
 			console.log(this);
