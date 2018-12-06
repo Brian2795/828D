@@ -324,7 +324,8 @@ var playState = {
                 this.stDevText.setText("Sample σ: "+stDev.toFixed(2));
                 
 
-            } else if (this.measurementList.length == 1) {
+            }
+            if (this.measurementList.length >= 1) { // fixed
                 var mean = jStat.mean(this.measurementList);
                 this.meanText.setText("Sample µ: "+mean.toFixed(2));
                 this.confInterval.setNlVals(sampleValue);
