@@ -12,7 +12,7 @@ var menuState = {
 			this.genProjects();
 			this.genGrants();
 			game.started = true;
-		}	
+		}
 
 		
 	},

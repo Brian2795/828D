@@ -6,7 +6,6 @@ function ConfidenceInterval( population, xLoc, yLoc, lineWidth=240, lineHeight=4
 	this.xLocInterval = this.xLocNl;
 	this.yLocInterval = yLoc - intervalHeight/2;
 
-
 	this.numberLine = new Phaser.Rectangle(this.xLocNl,this.yLocNl,lineWidth,lineHeight);
 	this.numberLineColor = nlColor;
 	this.interval = new Phaser.Rectangle(this.xLocInterval,this.yLocInterval,0,intervalHeight);
@@ -57,6 +56,24 @@ ConfidenceInterval.prototype = {
    		var locUpper = this.getLocOfValue(interval[1]);
    		this.xLocInterval = locLower;
    		this.interval.width = locUpper - locLower;; 
+   		this.setIntervalColor();
+   	},
+
+
+   	setIntervalColor: function( negColor=[255,0,0], posColor=[100,255,100] ) {
+   		var ratio = Math.min(this.interval.width / this.numberLine.width, 1);
+   		var newColor = [];
+   		var colorVal = 0;
+   		for(let i=0; i<3; i++) {
+   			colorVal = Math.round(ratio*(negColor[i]) + ((1-ratio) * posColor[i]));
+   			newColor.push(colorVal);
+   		}
+   		
+   		this.intervalColor = 'rgba(' + newColor[0] + ',' + newColor[1] + ',' 
+   			+ newColor[2] + ',1)';
+		console.log(newColor);
+   		console.log(this.intervalColor);
+
    	},
 }
 

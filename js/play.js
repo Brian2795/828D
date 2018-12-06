@@ -236,8 +236,6 @@ var playState = {
         this.createText(xLoc, yLoc, '95% Confidence Interval');
         this.intervalText = this.createText(xLoc, yLoc+25, '[n/a, n/a]');
         this.confInterval = new ConfidenceInterval(this.population, xLoc, yLoc+45);
-        
-        // this.confidenceIntervalText = this.createText(xLoc, yLoc+25, "[Not yet available]");
         this.meanText = this.createText(xLoc, yLoc+70, 'Sample µ - n/a');
         this.stDevText = this.createText(xLoc, yLoc+95, 'Sample σ - n/a');
         
