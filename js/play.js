@@ -215,29 +215,9 @@ var playState = {
     },
 
 
-    initObjectiveDisplay: function(){
-        // date
-        this.objTextBase = game.add.text(18, 180, "objective: ", {
-            font: '20px Arial',
-            fill: '000000',
-            align: 'left',
-        });
-        this.objTextBase.stroke = "#ffffff";
-        this.objTextBase.strokeThickness = 3;
-        this.objTextBase.anchor.setTo(0, 0.5);
-        this.objTextBase.fixedToCamera = true;
-
-
-        this.objText = game.add.text(110, 180, "Walk to the supervisor", {
-            font: '20px Arial',
-            fill: '000000',
-            align: 'left',
-        });
-        this.objText.stroke = "#ffffff";
-        this.objText.strokeThickness = 3;
-        this.objText.anchor.setTo(0, 0.5);
-        this.objText.fixedToCamera = true;
-
+    initObjectiveDisplay: function( xLoc=18, yLoc=600 ){
+        this.createText(xLoc,yLoc,'Objective(s):',22,'left',0);
+        this.objText = this.createText(xLoc+8,yLoc+24,'talk to the supervisor',20,'left',0,0);
     },
 
 
