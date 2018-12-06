@@ -188,7 +188,7 @@ function Project(title, description, population, environment, funding, exposure=
 	console.log("Title is");
 	console.log(title);
 	if (title === null) {
-		this.title = 'Project #' + String(this.getTotalProjectCount());
+		this.title = 'Tutorial #' + String(this.getTotalProjectCount());
 	} else {
 		this.title = title;
 	}

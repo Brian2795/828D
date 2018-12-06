@@ -24,7 +24,7 @@ var menuState = {
 
 		this.removeOldGrants();
 		this.removeOldProjects();
-
+		this.repopulateGrantList();
 
 	},	
 
@@ -166,6 +166,14 @@ var menuState = {
 		}
 		console.log('Failed Project List: ');
 		console.log(game.projectsFailed);
+	},
+
+
+	repopulateGrantList: function( target=3 ) {
+		console.log('Number of grants avialble: ' + game.grantsAvailable.length);
+		while (game.grantsAvailable.length < 3) {
+			this.genGrant();
+		}
 	},
 
 
