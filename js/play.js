@@ -105,8 +105,6 @@ var playState = {
 
 
     render: function() {
-        /* need to change the depth of this menu bar*/
-        // game.debug.geom(this.menuBar,'#ffffff');
         this.fundingText.setText('$' + String(game.totalFunding));
         this.spendingText.setText('($' + String(this.roundSpend) + ')');
         this.numSamplesText.setText(this.measurementList.length + ' samples');
@@ -217,9 +215,9 @@ var playState = {
     },
 
 
-    initObjectiveDisplay: function(){
-        this.objTextBase = this.createText(18,150,'Objective: ',20,'left',0);
-        this.objText = this.createText(110,150,'Walk to the supervisor',20,'left',0);
+    initObjectiveDisplay: function( yLoc=144 ){
+        this.createText(18,yLoc,'Objective: ',20,'left',0);
+        this.objText = this.createText(110,yLoc,'Walk to the supervisor',20,'left',0);
     },
 
 
@@ -295,7 +293,7 @@ var playState = {
             this.roundSpend += this.processCost;
             sample.kill();
             sampleValue = this.genDataValue();
-            this.measurementList.push(sampleValue)
+            this.measurementList.push(sampleValue);
             this.scoreText = 'Score: ' + this.measurementList.toString();
 
             if (this.measurementList.length >= 3) {
@@ -312,7 +310,6 @@ var playState = {
                 this.confInterval.setNlVals(sampleValue);
             } 
             
-
             this.genSamples(1); // replenishing samples. 
 
         } else {
@@ -376,8 +373,6 @@ var playState = {
         confInt[0] = this.roundToXDigits(this.confInt[0], 2);
         confInt[1] = this.roundToXDigits(this.confInt[1], 2);
         return confInt;
-        //console.log(this.measurementList);
-        console.log(confInt);
     },
 
 
@@ -568,7 +563,7 @@ var playState = {
 
                 // preprocess the dialogues
                 console.log(this.texts)
-                tx0 = this.texts[0] + this.jStat.mean(this.measurementList).toFixed(2).toString();
+                tx0 = this.texts[0] + jStat.mean(this.measurementList).toFixed(2).toString();
                 this.texts[0] = tx0;
                 tx1 = this.texts[1] + this.populationMean.toString();
                 this.texts[1] = tx1;
