@@ -66,11 +66,11 @@ var playState = {
                         2:["Hmmm you proved the statistical significance!","We can finally publish the paper!", ""]
                     }};
 
-        this.objectives = {0: {2: "collect 5 samples to compute a trial mean.", 4: "collect enough samples to compute an accurate mean"},
-                            1: {2:"collect 5 samples to compute a trial uncertainty.", 4:"collect enough samples so that {0} can be within 1 uncertainty."},
-                            2: {2:"collect 5 samples to compute a population mean.", 4:"collect enough samples so that your sample uncertainty is\n3 times greater than your population uncertainty."} ,
-                            3: {2:"collect 5 samples to examine the behavior of confidence internval." , 4:"collect enough samples so that C.I intervals < sample stdev."},
-                            4: {2:"collect enough samples so that {0} value is \nsignificantly different from the population mean."} }
+        this.objectives = {0: {2: "collect 5 samples to compute a trial mean.\ncome back to me when you have enough samples.", 4: "collect enough samples to compute an accurate mean.\ncome back to me when you have enough samples."},
+                            1: {2:"collect 5 samples to compute a trial uncertainty.\ncome back to me when you have enough samples.", 4:"collect enough samples so that {0} can be within 1 uncertainty.\ncome back to me when you have enough samples."},
+                            2: {2:"collect 5 samples to compute a population mean.\ncome back to me when you have enough samples.", 4:"collect enough samples so that your sample uncertainty is\n3 times greater than your population uncertainty.\ncome back to me when you have enough samples."} ,
+                            3: {2:"collect 5 samples to examine the behavior of confidence internval.\ncome back to me when you have enough samples." , 4:"collect enough samples so that C.I intervals < sample stdev.\ncome back to me when you have enough samples."},
+                            4: {2:"collect enough samples so that {0} value is \nsignificantly different from the population mean.\ncome back to me when you have enough samples."} }
     },
 
 
@@ -215,9 +215,29 @@ var playState = {
     },
 
 
-    initObjectiveDisplay: function( yLoc=144 ){
-        this.createText(18,yLoc,'Objective: ',20,'left',0);
-        this.objText = this.createText(110,yLoc,'Walk to the supervisor',20,'left',0);
+    initObjectiveDisplay: function(){
+        // date
+        this.objTextBase = game.add.text(18, 180, "objective: ", {
+            font: '20px Arial',
+            fill: '000000',
+            align: 'left',
+        });
+        this.objTextBase.stroke = "#ffffff";
+        this.objTextBase.strokeThickness = 3;
+        this.objTextBase.anchor.setTo(0, 0.5);
+        this.objTextBase.fixedToCamera = true;
+
+
+        this.objText = game.add.text(110, 180, "Walk to the supervisor", {
+            font: '20px Arial',
+            fill: '000000',
+            align: 'left',
+        });
+        this.objText.stroke = "#ffffff";
+        this.objText.strokeThickness = 3;
+        this.objText.anchor.setTo(0, 0.5);
+        this.objText.fixedToCamera = true;
+
     },
 
 
