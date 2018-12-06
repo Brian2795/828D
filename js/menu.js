@@ -23,6 +23,21 @@ var menuState = {
 	},
 
 
+	computeEmotion: function(reputation, funding) {
+		if (funding < 10000) {
+			return this.EmotionEnum.ANGRY;
+		} else {
+			if (reputation <= 30) {
+				return this.EmotionEnum.ANGRY;
+			} else if (reputation > 30 && reputation <= 60) {
+				return this.EmotionEnum.OKAY;
+			} else {
+				return this.EmotionEnum.HAPPY;
+			}
+		}
+	},
+
+
 	create: function() {
 		this.initBackground();
 		this.initLabOverview();
@@ -50,6 +65,40 @@ var menuState = {
             reputationChange: deltaReputation
         }*/
 	},
+
+	roundToXDigits: function(value, digits) {
+        if(!digits){
+            digits = 2;
+        }
+        value = value * Math.pow(10, digits);
+        value = Math.round(value);
+        value = value / Math.pow(10, digits);
+        return value;
+    },
+    initNumDisplay: function(){
+        // date
+        
+        this.objTextBase = game.add.text(530, 503, game.totalFunding, {
+            font: '30px Arial',
+            fill: '000000',
+            align: 'left',
+        });
+        this.objTextBase.stroke = "#ffffff";
+        this.objTextBase.strokeThickness = 3;
+        this.objTextBase.anchor.setTo(0, 0.5);
+        //this.objTextBase.fixedToCamera = true;
+
+        console.log(this.roundToXDigits( game.totalReputation, 2))
+        this.objText = game.add.text(255 , 503, this.roundToXDigits( game.totalReputation, 2), {
+            font: '30px Arial',
+            fill: '000000',
+            align: 'left',
+        });
+        this.objText.stroke = "#ffffff";
+        this.objText.strokeThickness = 3;
+        this.objText.anchor.setTo(0, 0.5);
+        //this.objText.fixedToCamera = true;
+    },
 
 
 	update: function() {
@@ -125,19 +174,6 @@ var menuState = {
 	},
 
 
-	computeEmotion: function(reputation, funding) {
-		if (funding < 10000) {
-			return this.EmotionEnum.ANGRY;
-		} else {
-			if (reputation <= 30) {
-				return this.EmotionEnum.ANGRY;
-			} else if (reputation > 30 && reputation <= 60) {
-				return this.EmotionEnum.OKAY;
-			} else {
-				return this.EmotionEnum.HAPPY;
-			}
-		}
-	},
 
 
 /* UPDATES & INTERACTIVE */
@@ -250,7 +286,6 @@ var menuState = {
 	},
 
 
-
 /* TERTIARY HELPERS */
 	addGrantCard: function( grant, totalHeight=150, titleHeight=50, padding=50) {
 		var xLoc = game.width - 500; 
@@ -338,31 +373,6 @@ var menuState = {
 	},
 
 
-    initNumDisplay: function(){
-        // date
-        this.objTextBase = game.add.text(530, 503, game.totalFunding, {
-            font: '30px Arial',
-            fill: '000000',
-            align: 'left',
-        });
-        this.objTextBase.stroke = "#ffffff";
-        this.objTextBase.strokeThickness = 3;
-        this.objTextBase.anchor.setTo(0, 0.5);
-        //this.objTextBase.fixedToCamera = true;
-
-        console.log(this.roundToXDigits( game.totalReputation, 2))
-        this.objText = game.add.text(255 , 503, this.roundToXDigits( game.totalReputation, 2), {
-            font: '30px Arial',
-            fill: '000000',
-            align: 'left',
-        });
-        this.objText.stroke = "#ffffff";
-        this.objText.strokeThickness = 3;
-        this.objText.anchor.setTo(0, 0.5);
-        //this.objText.fixedToCamera = true;
-    },
-
-
 	addHealthBar: function(barX, barY, barLabel, barPercent, barWidth=250) {
 		var barConfig = {
 			x: barX + barWidth/2, 
@@ -406,6 +416,8 @@ var menuState = {
 		this.grantsMissionsButton = game.add.button(800, 30, 'grants-missions-toggle', this.toggleGrantsMissions, this, 2, 2, 2);
 		this.currentOptionState = this.optionStateEnum.MISSIONS;
 	},
+
+
 
 
 	genProjects: function( numProjects=3 ) {
