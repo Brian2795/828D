@@ -58,7 +58,7 @@ var menuState = {
     initNumDisplay: function(){
         // date
         
-        this.objTextBase = game.add.text(225, 503, game.totalFunding, {
+        this.objTextBase = game.add.text(530, 503, game.totalFunding, {
             font: '30px Arial',
             fill: '000000',
             align: 'left',
@@ -68,8 +68,8 @@ var menuState = {
         this.objTextBase.anchor.setTo(0, 0.5);
         this.objTextBase.fixedToCamera = true;
 
-
-        this.objText = game.add.text(560 , 503, this.roundToXDigits( game.totalReputation, 2), {
+        console.log(this.roundToXDigits( game.totalReputation, 2))
+        this.objText = game.add.text(255 , 503, this.roundToXDigits( game.totalReputation, 2), {
             font: '30px Arial',
             fill: '000000',
             align: 'left',
