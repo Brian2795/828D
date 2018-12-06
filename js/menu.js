@@ -60,8 +60,8 @@ var menuState = {
 
 	update: function() {
 		game.date.setTime(game.date.getTime() + (game.time.elapsed * 60));
-    	this.reputationText.setText(this.roundToXDigits(game.totalReputation, 2));
-    	this.fundingText.setText('$' + game.totalFunding);
+    	this.reputationText.setText(this.roundToXDigits(game.totalReputation,2));
+    	this.fundingText.setText('$' + this.roundToXDigits(game.totalFunding,2));
 	},
 
 
@@ -279,7 +279,7 @@ var menuState = {
 
 
 /* TERTIARY HELPERS */
-	addGrantCard: function( grant, totalHeight=150, titleHeight=50, padding=50) {
+	addGrantCard: function( grant, totalHeight=180, titleHeight=50, padding=20) {
 		var xLoc = game.width - 500; 
 		var yLocTitle = (this.optionCount*totalHeight) + padding;
 		var yLocDetails = yLocTitle + titleHeight;
