@@ -7,14 +7,32 @@ var menuState = {
 			MISSIONS: 2
 		};
 		this.currentOptionState = this.optionStateEnum.MISSIONS;
-		
+		this.EmotionEnum = {
+			HAPPY: 1,
+			OKAY: 2,
+			ANGRY: 3,
+		};
+		this.currentEmotion = this.computeEmotion(game.totalReputation, game.totalFunding);
+
 		if(!game.started) { 
 			this.genProjects();
 			this.genGrants();
 			game.started = true;
 		}	
+	},
 
-		
+	computeEmotion: function(reputation, funding) {
+		if (funding < 10000) {
+			return this.EmotionEnum.ANGRY;
+		} else {
+			if (reputation <= 30) {
+				return this.EmotionEnum.ANGRY;
+			} else if (reputation > 30 && reputation <= 60) {
+				return this.EmotionEnum.OKAY;
+			} else {
+				return this.EmotionEnum.HAPPY;
+			}
+		}
 	},
 
 
@@ -244,11 +262,11 @@ var menuState = {
 		var popMean = levelResult.popMean;
 		var sampleMean = levelResult.sampleMean;
 		var popStDev = levelResult.popStDev;
-		var repChange = levelResult.reputationChange;
+		var repChange = levelResult.reputationChangeWithMultiplier;
 		var hasCollectedAtLeastOneSample = levelResult.hasCollectedAtLeastOneSample;
 		var summary;
 		if (hasCollectedAtLeastOneSample) {
-			summary = "Mission complete! Here's how you did: The population mean was "
+			summary = "Mission complete! \""+levelResult.grade+"\" performance."+"The population mean was "
 			+ popMean.toFixed(2)+" with " + "a standard devation of "+popStDev.toFixed(2)
 			+ ". The mean of your sample was " + sampleMean.toFixed(2) 
 			+ ". Based on your performance, you've received a reputation change of " 
@@ -274,11 +292,19 @@ var menuState = {
 		var details = grant.description + '\nDifficulty: ' + grant.recommendedRep
 			+ '\nAvailable Funding: ' + grant.maxFunding 
 			+ '\nProposal Deadline: ' + grant.propDeadline.toDateString();
-		var callback = function() { grant.apply(); };
+		
 
-		var titleText = game.add.text(xLoc, yLocTitle, grant.providor, style.navitem.default);
+		var titleText = game.add.text(xLoc, yLocTitle, grant.provider, style.navitem.default);
 		var detailText = game.add.text(xLoc, yLocDetails, details, style.navitem.subtitle);
-		this.createTextButton(titleText, grant.providor, 'Submit Proposal', callback);
+		
+		var callback = function () {
+			if (titleText.text != "Grant Obtained!") {
+				grant.apply();
+			}
+			titleText.setText("Grant Obtained!");
+		};
+
+		this.createTextButton(titleText, grant.provider, 'Submit Proposal', callback);
 
 		this.optionCount ++;
 		this.menuGroup.add(titleText);
@@ -311,13 +337,17 @@ var menuState = {
 		text.inputEnabled = true;
 		
 		text.events.onInputOver.add(function (target) {
-		  target.setStyle(style.navitem.hover);
-		  target.setText(hoverString);
+			if (target.text != "Grant Obtained!") {
+				target.setStyle(style.navitem.hover);
+				target.setText(hoverString);
+			}
 		});
 
 		text.events.onInputOut.add(function (target) {
-		  target.setStyle(style.navitem.default);
-		  target.setText(originalString);
+			if (target.text != "Grant Obtained!") {
+				target.setStyle(style.navitem.default);
+				target.setText(originalString);
+			}
 		});
 
 		text.events.onInputUp.add(callback);
@@ -363,10 +393,20 @@ var menuState = {
 
 
 	addTalkingHead: function() {
+		this.currentEmotion = this.computeEmotion(game.totalReputation, game.totalFunding);
 		talkingHead = this.game.add.sprite(300, 80, 'talking-head');
 		talkingHead.frame = 3;
-		talkingHead.animations.add('animate', Array.from({length: 83}, (v, k) => k), 10, true);
-		talkingHead.animations.play('animate');
+		talkingHead.animations.add('animateHappy', Array.from({length: 25}, (v, k) => k+5), 10, true);
+		talkingHead.animations.add('animateOkay', Array.from({length: 20}, (v, k) => k+40), 10, true);
+		talkingHead.animations.add('animateAngry', Array.from({length: 23}, (v, k) => k+60), 10, true);
+		if (this.currentEmotion === this.EmotionEnum.HAPPY) {
+			talkingHead.animations.play('animateHappy');
+		} else if (this.currentEmotion === this.EmotionEnum.OKAY) {
+			talkingHead.animations.play('animateOkay');
+		} else if (this.currentEmotion === this.EmotionEnum.ANGRY) {
+			talkingHead.animations.play('animateAngry');
+		}
+		
 	},
 
 
@@ -388,9 +428,9 @@ var menuState = {
 		var pop3 = game.populations['carrot'];
 
 		// Project( name, funding, population, recommendedRep )
-		var p1 = new Project('', pop1, env1, 10000, 20);
-		var p2 = new Project('', pop2, env1, 20000, 60);
-		var p3 = new Project('', pop3, env1, 50000, 100);
+		var p1 = new Project(null,'', pop1, env1, 10000, 20);
+		var p2 = new Project(null,'', pop2, env1, 20000, 60);
+		var p3 = new Project(null,'', pop3, env1, 50000, 100);
 
 		projects = [p1,p2,p3];
 		return projects;

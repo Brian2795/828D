@@ -1,20 +1,21 @@
 var playState = {
     init: function( project ) {
-        var environment = project.environment;
-        var population = project.population;
+        this.environment = project.environment;
+        this.population = project.population;
         this.projectTitle = project.title;
+        this.projectExposure = project.exposure;
 
-        this.envKey = environment.key;
-        this.envTilemap = environment.tilemap;
-        this.envTiles = environment.tiles;
+        this.envKey = this.environment.key;
+        this.envTilemap = this.environment.tilemap;
+        this.envTiles = this.environment.tiles;
 
-        this.sampleKey = population.key;
-        this.sampleUnits = population.units;
-        this.sampleSprite = population.sprite;
-        this.populationMean = population.mean;
-        this.populationStdv = population.stdv;
-        this.processCost = population.processCost;
-        this.prodPeriod = population.prodPeriod;
+        this.sampleKey = this.population.key;
+        this.sampleUnits = this.population.units;
+        this.sampleSprite = this.population.sprite;
+        this.populationMean = this.population.mean;
+        this.populationStdv = this.population.stdv;
+        this.processCost = this.population.processCost;
+        this.prodPeriod = this.population.prodPeriod;
     },
 
 
@@ -93,23 +94,23 @@ var playState = {
 
         game.physics.arcade.overlap(this.player, this.samples, this.collectSample, null, this);
         game.physics.arcade.overlap(this.player, this.npcs, this.progDialogue, null, this);
-        //game.physics.arcade.overlap(this.player, this.samples, this.collectsample, null, this);
         
-        this.confInterval.numberLine.x = this.confInterval.xRel + game.camera.x;
-        this.confInterval.numberLine.y = this.confInterval.yRel + game.camera.y;
+        this.confInterval.numberLine.x = this.confInterval.xLocNl + game.camera.x;
+        this.confInterval.numberLine.y = this.confInterval.yLocNl + game.camera.y;
+        
+        this.confInterval.interval.x = this.confInterval.xLocInterval + game.camera.x;
+        this.confInterval.interval.y = this.confInterval.yLocInterval + game.camera.y;
+
     },
 
 
     render: function() {
-        /* need to change the depth of this menu bar*/
-        // game.debug.geom(this.menuBar,'#ffffff');
         this.fundingText.setText('$' + String(game.totalFunding));
         this.spendingText.setText('($' + String(this.roundSpend) + ')');
         this.numSamplesText.setText(this.measurementList.length + ' samples');
         this.samplesText.setText(this.genSamplesText());
-        game.debug.geom(this.confInterval.numberLine, this.confInterval.numberLineColor) ;
-        // this.rect.anchor.setTo(0.5, 0.5);
-        // this.rect.setScrollFactor(0);
+        game.debug.geom(this.confInterval.numberLine, this.confInterval.numberLineColor);
+        game.debug.geom(this.confInterval.interval, this.confInterval.intervalColor);
     },
 
 
@@ -132,11 +133,9 @@ var playState = {
     initMeta: function() {
         this.initMenu();
         this.initProjectDetailsDisplay();
+        this.initObjectiveDisplay();
         this.initFundingDisplay();
         this.initSampleDataDisplay();
-
-        this.initObjectiveDisplay();
-
         this.initStatsDisplay();
 
         this.roundSpend = 0;
@@ -209,11 +208,12 @@ var playState = {
     initProjectDetailsDisplay: function( xLoc=10, yLoc=48 ) {
         var envText = String(this.envKey);
         envText = envText.charAt(0).toUpperCase() + envText.slice(1);
-        
+
         this.createText(xLoc,yLoc,this.projectTitle,32,'left',0);               // project title
         this.createText(xLoc+8,yLoc+36,envText,24,'left',0);                    // environment
         this.createText(xLoc+8,yLoc+66,game.date.toDateString(),20,'left',0);   // date
     },
+
 
     initObjectiveDisplay: function(){
         // date
@@ -237,10 +237,11 @@ var playState = {
         this.objText.strokeThickness = 3;
         this.objText.anchor.setTo(0, 0.5);
         this.objText.fixedToCamera = true;
+
     },
 
 
-    initFundingDisplay: function(xLoc=game.world.centerX, yLoc=48) {
+    initFundingDisplay: function( xLoc=game.world.centerX, yLoc=48 ) {
         this.fundingText = this.createText(xLoc,yLoc,'',48,'center');
         this.spendingText = this.createText(xLoc,yLoc+44,'',24,'center');
     },
@@ -253,24 +254,27 @@ var playState = {
 
 
     initStatsDisplay: function( xLoc=1150, yLoc=600 ) {
-        this.createText(xLoc, yLoc, "95% Confidence Interval");
-        this.confidenceIntervalText = this.createText(xLoc, yLoc+25, "[Not yet available]");
-        this.meanText = this.createText(xLoc, yLoc+50, "Sample mean: [N/A]");
-        this.stDevText = this.createText(xLoc, yLoc+75, 'Sample StDev: [N/A]');
-        this.confInterval = new ConfidenceInterval(xLoc, yLoc+100);
+        this.createText(xLoc, yLoc, '95% Confidence Interval');
+        this.intervalText = this.createText(xLoc, yLoc+25, '[n/a, n/a]');
+        this.confInterval = new ConfidenceInterval(this.population, xLoc, yLoc+45);
+        
+        // this.confidenceIntervalText = this.createText(xLoc, yLoc+25, "[Not yet available]");
+        this.meanText = this.createText(xLoc, yLoc+70, 'Sample µ - n/a');
+        this.stDevText = this.createText(xLoc, yLoc+95, 'Sample σ - n/a');
+        
     },
 
 
-    createText: function(xLoc, yLoc, content, fontSize=20, alignment='right', anchorX=0.5, anchorY=0.5, fontStyle='Arial', color='000000' ) {
+    createText: function(xLoc, yLoc, content, fontSize=20, alignment='right', anchorX=0.5, anchorY=0.5, 
+        fontStyle='Arial', color='000000', borderColor='#ffffff', borderWidth=3 ) {
         var font = String(fontSize) + 'px ' + fontStyle;
         var text = game.add.text(xLoc, yLoc, content, {
             font: font,
             fill: color,
             align: alignment,
-
+            stroke: borderColor,
+            strokeThickness: borderWidth,
         });
-        text.stroke = "#ffffff";
-        text.strokeThickness = 3;
 
         text.anchor.setTo(anchorX, anchorY);
         text.fixedToCamera = true
@@ -293,19 +297,8 @@ var playState = {
     },
 
 
-    computeConfidenceInterval: function() {
-        var mean = jStat.mean(this.measurementList);
-        var confInt = jStat.tci(mean, 0.05, this.measurementList);
-        confInt[0] = this.roundToXDigits(confInt[0],2)
-        confInt[1] = this.roundToXDigits(confInt[1],2)
-        return confInt;
-        //console.log(this.measurementList);
-        //console.log(confInt);
-    },
-
-
     genSamples: function(totSamples) {
-        // create samples.
+        // create samples
         for (var i = 0; i < totSamples; i++) {
             locX = game.width * Math.random();
             locY = game.height * Math.random();
@@ -320,20 +313,22 @@ var playState = {
             this.roundSpend += this.processCost;
             sample.kill();
             sampleValue = this.genDataValue();
-            this.measurementList.push(sampleValue)
+            this.measurementList.push(sampleValue);
             this.scoreText = 'Score: ' + this.measurementList.toString();
-            // this.openPopupWindow(this.genPopupText(sampleValue));
-            if (this.measurementList.length > 4) {
-                var confInt = this.computeConfidenceInterval();
-                var width = confInt[1] - confInt[0];
-                this.confidenceIntervalText.setText(confInt.toString()+" - Width: "+width.toFixed(2));
-            }
-            if (this.measurementList.length > 2) {
-                var mean = jStat.mean(this.measurementList);
+
+            if (this.measurementList.length >= 3) {
+                var interval = this.confInterval.computeInterval(this.measurementList);
+                this.intervalText.setText('[' + interval[0] + ', ' + interval[1] + ']');
+                this.confInterval.setInterval(this.measurementList);
                 var stDev = jStat.stdev(this.measurementList,true);
-                this.meanText.setText("Sample Mean: "+mean.toFixed(2));
-                this.stDevText.setText("Sample StDev: "+stDev.toFixed(2));
-            }
+                this.stDevText.setText("Sample σ: "+stDev.toFixed(2));
+                
+
+            } else if (this.measurementList.length == 1) {
+                var mean = jStat.mean(this.measurementList);
+                this.meanText.setText("Sample µ: "+mean.toFixed(2));
+                this.confInterval.setNlVals(sampleValue);
+            } 
             
             this.genSamples(1); // replenishing samples. 
 
@@ -345,23 +340,41 @@ var playState = {
 
     genDataValue: function() {
         var val = jStat.normal.sample(this.populationMean,this.populationStdv);
-        return Math.round(val * 100) / 100;
+        return this.roundToXDigits(val,2);
     },
 
 
     clickReturnButton: function() {
         var deltaReputation = 0;
+        var deltaReputationWithExposure = 0;
+        // (0->0.2), (100->3)
+        var exposureMultiplier = this.projectExposure*0.028+0.2;
         if (this.measurementList.length > 0){
             deltaReputation = 2 - Math.min(4, Math.abs(  (jStat.mean(this.measurementList) - this.populationMean)/this.populationStdv));
-            game.totalReputation = Math.min(game.maxReputation, game.totalReputation + deltaReputation)
+            deltaReputationWithExposure = exposureMultiplier * deltaReputation;
+            game.totalReputation = Math.min(game.maxReputation, game.totalReputation + deltaReputationWithExposure)
+        }
+
+        var performance="N/A";
+        if (deltaReputation <= 0.5) {
+            performance = "F";
+        } else if (deltaReputation > 0.5 && deltaReputation <= 1.0) {
+            performance = "C";
+        } else if (deltaReputation > 1.0 && deltaReputation <= 1.5) {
+            performance = "B";
+        } else if (deltaReputation > 1.5) {
+            performance = "A";
         }
         
         console.log("reputation gained: " +  deltaReputation)
+        
         game.levelResult = {
             popMean: this.populationMean,
             popStDev: this.populationStdv,
             sampleMean: jStat.mean(this.measurementList),
             reputationChange: deltaReputation,
+            reputationChangeWithMultiplier: deltaReputation*exposureMultiplier,
+            grade: performance,
             hasCollectedAtLeastOneSample: this.measurementList.length > 0
         }
         game.state.start('menu');
@@ -371,6 +384,15 @@ var playState = {
 
     clickSettingsButton: function() {
         console.log("Settings button was clicked");
+    },
+
+
+    computeConfidenceInterval: function() {
+        var mean = jStat.mean(this.measurementList);
+        var confInt = jStat.tci(mean, 0.05, this.measurementList);
+        confInt[0] = this.roundToXDigits(this.confInt[0], 2);
+        confInt[1] = this.roundToXDigits(this.confInt[1], 2);
+        return confInt;
     },
 
 
@@ -561,7 +583,7 @@ var playState = {
 
                 // preprocess the dialogues
                 console.log(this.texts)
-                tx0 = this.texts[0] + this.roundToXDigits(jStat.mean(this.measurementList),2).toString();
+                tx0 = this.texts[0] + jStat.mean(this.measurementList).toFixed(2).toString();
                 this.texts[0] = tx0;
                 tx1 = this.texts[1] + this.populationMean.toString();
                 this.texts[1] = tx1;

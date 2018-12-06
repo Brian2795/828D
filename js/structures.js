@@ -1,27 +1,63 @@
-function ConfidenceInterval( xLoc, yLoc, lineWidth=240, lineHeight=3 ) {
-	this.xRel = xLoc - lineWidth/2;		// relative loc to camera 
-	this.yRel = yLoc - lineHeight/2;		// ..assuming anchor.setTo(.5,.5)
-	this.numberLine = new Phaser.Rectangle(this.xRel,this.yRel,lineWidth, lineHeight);
-	this.numberLineColor = 'rgba(0,0,0,1)';
-	this.intervalColor = 'rgba(100,100,0,1)';
+function ConfidenceInterval( population, xLoc, yLoc, lineWidth=240, lineHeight=4, intervalHeight=6, nlColor='rgba(0,0,0,1)', intervalColor='rgba(200,0,200,1)' ) {
+	this.population = population;
+	
+	this.xLocNl = xLoc - lineWidth/2;		// relative loc to camera 
+	this.yLocNl = yLoc - lineHeight/2;		// ..assuming anchor.setTo(.5,.5)
+	this.xLocInterval = this.xLocNl;
+	this.yLocInterval = yLoc - intervalHeight/2;
+
+
+	this.numberLine = new Phaser.Rectangle(this.xLocNl,this.yLocNl,lineWidth,lineHeight);
+	this.numberLineColor = nlColor;
+	this.interval = new Phaser.Rectangle(this.xLocInterval,this.yLocInterval,0,intervalHeight);
+	this.intervalColor = intervalColor;
 }
 
 ConfidenceInterval.prototype = {
 	constructor: ConfidenceInterval,
 
-	getNlBounds: function() {
+	computeInterval: function( values, decimals=2 ) {
+        var mean = jStat.mean(values);
+        var interval = jStat.tci(mean, 0.05, values);
+        interval[0] = Math.round(interval[0] * 100) / 100;
+        interval[1] = Math.round(interval[1] * 100) / 100;
+        return interval;
+    },
+
+
+   	getLocOfValue: function( val ) {
+   	/* Gets the physical x locations of a value on the numberLine given the 
+   	 * NL's bounding locations and min/max values 
+   	 */ 
+   	 	var boundLower = this.xLocNl;
+   	 	var boundUpper = this.xLocNl + this.numberLine.width;
+   	 	var width = boundUpper - boundLower;
+   	 	var ratio = (val-this.minVal) / (this.maxVal-this.minVal);
+   	 	var valLoc = boundLower + ratio*width;
+   		return valLoc;
+   	},
+
+	getNlLocs: function() {
 	/* Returns the relative x locations of either side of the numberline
 	 */
 		return [xLocRel, xLocRel+numberLine.width];
 	},
 
-	setNlBoundVals: function( population, sampleVal, stdvs=3 ) {
-		this.minVal = sampleVal - population.stdv*stdvs;
-		this.maxVal = sampleVal + population.stdv*stdvs;
+	setNlVals: function( midVal, stdvs=3 ) {
+		this.minVal = midVal - this.population.stdv*stdvs;
+		this.maxVal = midVal + this.population.stdv*stdvs;
 		console.log(this.minVal)
 		console.log(this.maxVal)
 	},
 
+   	setInterval: function( values ) {
+   		// get the location and values of either side
+   		var interval = this.computeInterval(values);
+   		var locLower = this.getLocOfValue(interval[0]);
+   		var locUpper = this.getLocOfValue(interval[1]);
+   		this.xLocInterval = locLower;
+   		this.interval.width = locUpper - locLower;; 
+   	},
 }
 
 
@@ -50,7 +86,7 @@ function Grant( population, environment, recommendedRep, maxFunding ) {
 	this.minFunding = maxFunding / 2;
 
 	this.verb = game.titleVerbs[Math.floor(Math.random() * game.titleVerbs.length)];
-	this.providor = game.grantProvidors[Math.floor(Math.random() * game.grantProvidors.length)];
+	this.provider = game.grantProviders[Math.floor(Math.random() * game.grantProviders.length)];
 	this.startDate = new Date(game.date.toLocaleDateString());
 	this.propDeadline = this.genDeadline();			// deadline to submit a proposal
 	this.description = this.getDescription();
@@ -63,15 +99,16 @@ function Grant( population, environment, recommendedRep, maxFunding ) {
 Grant.prototype = {
 	constructor: Grant,	
 
-	apply: function() {
-	/* Generates a project with funding amount and a deadline. Funding generated 
-	 * based on the recommended reputation of the project and the reputation of
-	 * the player. Removes the current grant from the global list: grantsAvailable
-	 */
-	 	var funding = this.calcProjectFunding();
-	 	var project = new Project(this.description, this.population, this.environment, funding);
-	 	var grantIndex = game.grantsAvailable.indexOf(this);
-	 	game.grantsAvailable.splice(grantIndex, 1);
+	apply: function () {
+		/* Generates a project with funding amount and a deadline. Funding generated 
+		 * based on the recommended reputation of the project and the reputation of
+		 * the player. Removes the current grant from the global list: grantsAvailable
+		 */
+		var funding = this.calcProjectFunding();
+
+		var project = new Project(this.provider, this.description, this.population, this.environment, funding);
+		var grantIndex = game.grantsAvailable.indexOf(this);
+		game.grantsAvailable.splice(grantIndex, 1);
 		return project;
 	},
 
@@ -126,7 +163,7 @@ Population.prototype = {
 
 
 
-function Project( description, population, environment, funding, exposure=1, duration=-1 ) {
+function Project(title, description, population, environment, funding, exposure=1, duration=-1 ) {
 	this.population = population;			
 	this.environment = environment;
 	this.funding = funding;					// amount of funding awarded for project
@@ -134,7 +171,14 @@ function Project( description, population, environment, funding, exposure=1, dur
 	
 
 	this.description = description;
-	this.title = 'Project #' + String(this.getTotalProjectCount());
+	console.log("Title is");
+	console.log(title);
+	if (title === null) {
+		this.title = 'Project #' + String(this.getTotalProjectCount());
+	} else {
+		this.title = title;
+	}
+	
 	this.startDate = new Date(game.date.toLocaleDateString());
 	this.deadline = this.genDeadline(duration);
 
