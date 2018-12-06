@@ -934,7 +934,7 @@ var playState = {
 
             if(this.measurementList.length >= 5 && (  (mmean + width/2) < this.questVar)){
 
-                // preprocess the dialogues
+                // preprocess the dialogues//
                 console.log(this.texts)
                 this.phase = this.phase + 1 
                 deltaReputation = 2
