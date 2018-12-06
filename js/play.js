@@ -227,6 +227,8 @@ var playState = {
             fill: '000000',
             align: 'left',
         });
+        this.objTextBase.stroke = "#ffffff";
+        this.objTextBase.strokeThickness = 3;
         this.objTextBase.anchor.setTo(0, 0.5);
         this.objTextBase.fixedToCamera = true;
 
@@ -236,6 +238,8 @@ var playState = {
             fill: '000000',
             align: 'left',
         });
+        this.objText.stroke = "#ffffff";
+        this.objText.strokeThickness = 3;
         this.objText.anchor.setTo(0, 0.5);
         this.objText.fixedToCamera = true;
     },
@@ -268,7 +272,10 @@ var playState = {
             font: font,
             fill: color,
             align: alignment,
+
         });
+        text.stroke = "#ffffff";
+        text.strokeThickness = 3;
 
         text.anchor.setTo(anchorX, anchorY);
         text.fixedToCamera = true
@@ -359,6 +366,17 @@ var playState = {
             deltaReputation = 2 - Math.min(4, Math.abs(  (jStat.mean(this.measurementList) - this.populationMean)/this.populationStdv));
             game.totalReputation = Math.min(game.maxReputation, game.totalReputation + deltaReputation)
         }
+
+        var performance="N/A";
+        if (deltaReputation <= 0.5) {
+            performance = "F";
+        } else if (deltaReputation > 0.5 && deltaReputation <= 1.0) {
+            performance = "C";
+        } else if (deltaReputation > 1.0 && deltaReputation <= 1.5) {
+            performance = "B";
+        } else if (deltaReputation > 1.5) {
+            performance = "A";
+        }
         
         console.log("reputation gained: " +  deltaReputation)
         game.levelResult = {
@@ -366,6 +384,7 @@ var playState = {
             popStDev: this.populationStdv,
             sampleMean: jStat.mean(this.measurementList),
             reputationChange: deltaReputation,
+            grade: performance,
             hasCollectedAtLeastOneSample: this.measurementList.length > 0
         }
         game.state.start('menu');
@@ -420,6 +439,8 @@ var playState = {
         this.dialogueState.popupText.anchor.set(0.5);
         this.dialogueState.popupText.visible = false;
         this.dialogueState.popupText.fixedToCamera = true;
+        this.dialogueState.popupText.stroke = "#ffffff";
+        this.dialogueState.popupText.strokeThickness = 3;
 
 
         this.dialogueState.spsp = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
@@ -445,6 +466,8 @@ var playState = {
         dialogueState.popupText.anchor.set(0.5)
         dialogueState.popupText.fixedToCamera = true;
         dialogueState.popupText.visible = true;
+        dialogueState.popupText.stroke = "#ffffff";
+        dialogueState.popupText.strokeThickness = 3;
         //  Create a tween that will pop-open the Dialogue, but only if it's not already tweening or open
         dialogueState.tween = game.add.tween(dialogueState.popup.scale).to({ x: 1, y: 1 }, 1000, Phaser.Easing.Elastic.Out, true);
         dialogueState.isPopupOpen = true; 
@@ -488,6 +511,8 @@ var playState = {
         this.dialogueState.popupText.x = Math.floor(this.dialogueState.popup.x );
         this.dialogueState.popupText.y = Math.floor(this.dialogueState.popup.y * 1.8);
         this.dialogueState.popupText.anchor.set(0.5)
+        this.dialogueState.popupText.stroke = "#ffffff";
+        this.dialogueState.popupText.strokeThickness = 3;
 
         //this.openPopupDialogue();
     },
