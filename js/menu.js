@@ -197,7 +197,7 @@ var menuState = {
 	addGrantList: function( titleText='Available Grants' ) {
 		var title = game.add.text(game.width-500, 100, titleText, style.navitem.hover);
 		this.currentOptionState = this.optionStateEnum.GRANTS;
-		this.grantsMissionsButton.setFrames(1,1,1);
+		//this.grantsMissionsButton.setFrames(1,1,1);
 		this.menuGroup.add(title);
 		
 		for (i = 0; i < game.grantsAvailable.length; i++) {
@@ -213,7 +213,7 @@ var menuState = {
 	addProjectList: function( titleText='Ongoing Projects' ) {
 		var title = game.add.text(game.width-500, 100, titleText, style.navitem.hover);
 		this.currentOptionState = this.optionStateEnum.MISSIONS;
-		this.grantsMissionsButton.setFrames(2,2,2);
+		//this.grantsMissionsButton.setFrames(2,2,2);
 		this.menuGroup.add(title);
 
 		for (i = 0; i < game.projectsOngoing.length; i++) {
@@ -413,8 +413,25 @@ var menuState = {
 
 
 	addGrantMissionToggleButton: function() {
-		this.grantsMissionsButton = game.add.button(800, 30, 'grants-missions-toggle', this.toggleGrantsMissions, this, 2, 2, 2);
 		this.currentOptionState = this.optionStateEnum.MISSIONS;
+
+		//this.grantsMissionsButton = game.add.button(800, 30, 'grants-missions-toggle', this.toggleGrantsMissions, this, 2, 2, 2);
+		var showGrantsText = game.add.text(800, 30, "Grants", style.navitem.default);
+		var showMissionsText = game.add.text(1000, 30, "Missions", style.navitem.hover);
+		var showGrantsCallback = function() { 
+			console.log("This");
+			console.log(this);
+			if (this.currentOptionState != 1) {
+				this.menuState.toggleGrantsMissions();
+			}
+		};
+		var showMissionsCallback = function() { 
+			if (this.currentOptionState != 2) {
+				this.menuState.toggleGrantsMissions();
+			}
+		};
+		this.createTextButton(showGrantsText, "Grants", 'Grants', showGrantsCallback);
+		this.createTextButton(showMissionsText, "Missions", 'Missions', showMissionsCallback);
 	},
 
 
