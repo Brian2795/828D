@@ -43,15 +43,15 @@ var playState = {
                             "I want to assess the mean again. Collect more samples for me!", "I would like to collect as accurate mean as possible!", ""], 
                         4: ["Your current mean is: ", "The actual mean is: ", "Now, go back to the lab! ", ""]  },
 
-                    1:{0:["Hmm. I just discovered that the values \nof samples are different from each other.", "In order to publich a paper,\nwe have to note this uncertainty numerically.", 
+                    1:{0:["Hmm. I just discovered that the values \nof samples are different from each other.", "In order to publish a paper,\nwe have to note this uncertainty numerically.", 
                             "I would like you to collect some \nsamples to measure this uncertainty", ""],
-                        2:["The uncertainty from your sample is:", "It is said that 65% of samples \nare within 1 uncertainty range.", "Now collect more samples that this \nvalue can be in 1 uncetainty range: ",
+                        2:["The uncertainty from your sample is:", "It is said that 65% of samples \nare within 1 standard deviation.", "Now collect more samples that this \nvalue can be in 1 uncertainty range: ",
                          "this may be not achievable, so feel free to go back to the lab! ",""],
                         4:["Thank you!", "Now, go back to the lab!", ""]},
                     
                     2:{0:["Ok. We know what an uncertainty and a mean of sample are.", "However, how certain are we about the mean?","I mean, that mean changes as we collect more sample.",
                         "Therefore, we need a measure to evaluate the uncertainty of the mean.", "Now, collect some samples to evaluate that",""],
-                        2:["Your sample uncertainty is:", "Your mean (population) uncertainty is:", "The population uncertainty is sample uncertainty/sqrt(n)", "Now, collect more samples so that your sample uncertainty \n is 3 times larger than your population uncertainty",""],
+                        2:["Your sample uncertainty is:", "Your mean (population) uncertainty is:", "The sampling distribution uncertainty is sample uncertainty/sqrt(n)", "Now, collect more samples so that your sample uncertainty \n is 3 times larger than your population uncertainty",""],
                         4:["Thanks!", "Now, go back to the lab!", ""]},
                     
                     3:{0:["One of my colleague asked me how confident \n I am about the mean of samples I collected.", "Hmmm. I do we answer that?", "Can you collect some samples to examine confidence intervals?", ""],
@@ -60,10 +60,10 @@ var playState = {
                         4:["Good job!", "Now, go back to the lab!", ""]},
                     
                     4:{0:["Wow! We gained a lot of insights about the sample!", "Now, we need to conclude that our samples \nare different from previously collected samples.", 
-                        "In order to conclude statistical signficance, we need \nto show that the difference of two values is larger \nthan sqrt of sum of squares of uncertainty",
+                        "In order to conclude statistical significance, we need \nto show that the difference of two values is larger \nthan sqrt of sum of squares of uncertainty",
                         "if one value has very small uncertainty, the difference \nof two values must be bigger than the uncertainty.", 
                         "For our case, if a value is outside the confidence interval,\nthe difference of two values are statistically significant!",
-                        "Now, collect some samples that we \ncan conclude the statistical significance.", "The previously study showed the samples has the mean of :", 
+                        "Now, collect some samples that we \ncan conclude the statistical significance.", "The previous study showed the samples has the mean of :", 
                         "I want to show that our samples has statistically \nsignificantly different mean from the previous study!", ""],
                         2:["Hmmm you proved the statistical significance!","We can finally publish the paper!", ""]
                     }};
@@ -71,7 +71,7 @@ var playState = {
         this.objectives = {0: {2: "collect 5 samples to compute a trial mean.\ncome back to me when you have enough samples.", 4: "collect enough samples to compute an accurate mean.\ncome back to me when you have enough samples.", 6:"go back to lab"},
                             1: {2:"collect 5 samples to compute a trial uncertainty.\ncome back to me when you have enough samples.", 4:"collect enough samples so that {0} can be within 1 uncertainty.\ncome back to me when you have enough samples.", 6:"go back to lab"},
                             2: {2:"collect 5 samples to compute a population mean.\ncome back to me when you have enough samples.", 4:"collect enough samples so that your sample uncertainty is\n3 times greater than your population uncertainty.\ncome back to me when you have enough samples.", 6:"go back to lab"} ,
-                            3: {2:"collect 5 samples to examine the behavior of confidence internval.\ncome back to me when you have enough samples." , 4:"collect enough samples so that C.I intervals < sample stdev.\ncome back to me when you have enough samples.", 6:"go back to lab"},
+                            3: {2:"collect 5 samples to examine the behavior of confidence interval.\ncome back to me when you have enough samples." , 4:"collect enough samples so that C.I intervals < sample stdev.\ncome back to me when you have enough samples.", 6:"go back to lab"},
                             4: {2:"collect enough samples so that {0} value is \nsignificantly different from the population mean.\ncome back to me when you have enough samples.", 4:"go back to lab"} }
     
     },
