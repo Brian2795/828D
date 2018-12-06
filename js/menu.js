@@ -60,6 +60,8 @@ var menuState = {
 
 	update: function() {
 		game.date.setTime(game.date.getTime() + (game.time.elapsed * 60));
+    	this.reputationText.setText(this.roundToXDigits(game.totalReputation, 2));
+    	this.fundingText.setText('$' + game.totalFunding);
 	},
 
 
@@ -89,7 +91,6 @@ var menuState = {
 		this.addTalkingHead();
 		this.initQuote(150, 550);
 		this.initStats();
-		this.initNumDisplay();
 	},
 
 
@@ -289,7 +290,7 @@ var menuState = {
 		var yLocTitle = (this.optionCount*totalHeight) + padding;
 		var yLocDetails = yLocTitle + titleHeight;
 		var details = grant.description + '\nDifficulty: ' + grant.recommendedRep
-			+ '\nAvailable Funding: ' + grant.maxFunding 
+			+ '\nAvailable Funding: $' + grant.maxFunding 
 			+ '\nProposal Deadline: ' + grant.propDeadline.toDateString();
 		
 
@@ -367,13 +368,14 @@ var menuState = {
 		this.addHealthBar(150, 500, "Reputation", repPercent);
 		var fundingPercent = 100 * game.totalFunding / game.maxFunding;
 		this.addHealthBar(450, 500, "Funding", fundingPercent);
+		this.initNumDisplay();
 	},
 
 
     initNumDisplay: function(){
     	var totalRep = this.roundToXDigits( game.totalReputation, 2);
-    	this.createText(270, 503, totalRep);
-    	this.createText(570, 503, game.totalFunding);
+    	this.reputationText = this.createText(270, 503, totalRep);
+    	this.fundingText = this.createText(570, 503, '$' + game.totalFunding);
     	
     },
 
@@ -438,7 +440,6 @@ var menuState = {
 		this.createTextButton(showGrantsText, "Grants", 'Grants', showGrantsCallback,style.navitem.hover,style.navitem.default);
 		this.createTextButton(showMissionsText, "Missions", 'Missions', showMissionsCallback,style.navitem.hover,style.navitem.hover);
 	},
-
 
 
 

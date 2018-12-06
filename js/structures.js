@@ -122,6 +122,7 @@ Grant.prototype = {
 		var project = new Project(this.provider, this.description, this.population, this.environment, funding);
 		var grantIndex = game.grantsAvailable.indexOf(this);
 		game.grantsAvailable.splice(grantIndex, 1);
+		game.totalFunding += funding;
 		return project;
 	},
 
