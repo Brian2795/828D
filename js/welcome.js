@@ -21,8 +21,18 @@ var welcomeState = {
 		this.loadCharacters();
 		this.loadPopulations();
 		this.loadEnvironments();
+		this.loadTipQuotes();
 	},
 
+	loadTipQuotes: function() {
+		game.tipQuotes = [
+			"Apply to grants at stratigic times! Grants are more\ngenerous to high-reputation researchers.", 
+			"High-exposure projects amplify your reputation change!",
+			"You can gain bonus reputation by speaking to your\nadvisor and completing their quests!",
+			"Large sample sizes are great, but watch your budget!\nProcessing each sample costs money.",
+			"Use the statistics data at the bottom-right of your\nscreen to help you decide when to finish!"
+		];
+	},
 
 	create: function() {
 		this.loadingLabel.setText("Loaded!")

@@ -358,7 +358,7 @@ var menuState = {
 		var quoteText = game.add.text(
 			quoteX,
 			quoteY,
-			"\"Keep it up! Collect high quality data to improve\nour reputation.\"", 
+			"\""+game.tipQuotes[Math.floor(Math.random()*game.tipQuotes.length)]+"\"", 
 			style.quote.default);
 	},
 
