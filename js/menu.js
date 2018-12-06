@@ -327,8 +327,7 @@ var menuState = {
 
 
     initNumDisplay: function(){
-        // date
-        
+    	// this.createText(530,503,game.totalFunding, 30, 'left',)
         this.objTextBase = game.add.text(530, 503, game.totalFunding, {
             font: '30px Arial',
             fill: '000000',
@@ -350,27 +349,6 @@ var menuState = {
         this.objText.anchor.setTo(0, 0.5);
         //this.objText.fixedToCamera = true;
     },
-
-
-	addHealthBar: function(barX, barY, barLabel, barPercent, barWidth=250) {
-		var barConfig = {
-			x: barX + barWidth/2, 
-			y: barY,
-			width: barWidth,
-			bar: {
-				color: '#42f498'
-			},
-		};
-		this.reputationHealthBar = new HealthBar(this.game, barConfig);
-		this.reputationHealthBar.setPercent(barPercent);
-
-		// console.log(this.reputationHealthBar.width);
-		var reputationLabel = game.add.text(
-			barX, 
-			barY - 50, 
-			barLabel, 
-			style.basiclabel.default);
-	},
 
 
 	addTalkingHead: function() {
@@ -466,6 +444,46 @@ var menuState = {
 	},
 
 
+
+/* HELPER FUNCTIONS	*/
+    addHealthBar: function(barX, barY, barLabel, barPercent, barWidth=250) {
+		var barConfig = {
+			x: barX + barWidth/2, 
+			y: barY,
+			width: barWidth,
+			bar: {
+				color: '#42f498'
+			},
+		};
+		this.reputationHealthBar = new HealthBar(this.game, barConfig);
+		this.reputationHealthBar.setPercent(barPercent);
+
+		// console.log(this.reputationHealthBar.width);
+		var reputationLabel = game.add.text(
+			barX, 
+			barY - 50, 
+			barLabel, 
+			style.basiclabel.default);
+	},
+
+
+    createText: function(xLoc, yLoc, content, fontSize=20, alignment='right', anchorX=0.5, anchorY=0.5, 
+        fontStyle='Arial', color='000000', borderColor='#ffffff', borderWidth=3 ) {
+        var font = String(fontSize) + 'px ' + fontStyle;
+        var text = game.add.text(xLoc, yLoc, content, {
+            font: font,
+            fill: color,
+            align: alignment,
+            stroke: borderColor,
+            strokeThickness: borderWidth,
+        });
+
+        text.anchor.setTo(anchorX, anchorY);
+        text.fixedToCamera = true
+        return text;
+    },
+
+
 	roundToXDigits: function(value, digits) {
         if(!digits){
             digits = 2;
@@ -475,6 +493,6 @@ var menuState = {
         value = value / Math.pow(10, digits);
         return value;
     },
-
+    
 
 };

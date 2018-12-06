@@ -246,24 +246,6 @@ var playState = {
     },
 
 
-    createText: function(xLoc, yLoc, content, fontSize=20, alignment='right', anchorX=0.5, anchorY=0.5, 
-        fontStyle='Arial', color='000000', borderColor='#ffffff', borderWidth=3 ) {
-        var font = String(fontSize) + 'px ' + fontStyle;
-        var text = game.add.text(xLoc, yLoc, content, {
-            font: font,
-            fill: color,
-            align: alignment,
-            stroke: borderColor,
-            strokeThickness: borderWidth,
-        });
-
-        text.anchor.setTo(anchorX, anchorY);
-        text.fixedToCamera = true
-        return text;
-    },
-
-
-
 
 
 /* UPDATES & INTERACTIVE */
@@ -377,6 +359,8 @@ var playState = {
     },
 
 
+
+/* HELPER FUNCTIONS */
     roundToXDigits: function(value, digits) {
         if(!digits){
             digits = 2;
@@ -387,6 +371,22 @@ var playState = {
         return value;
     },
 
+
+    createText: function(xLoc, yLoc, content, fontSize=20, alignment='right', anchorX=0.5, anchorY=0.5, 
+        fontStyle='Arial', color='000000', borderColor='#ffffff', borderWidth=3 ) {
+        var font = String(fontSize) + 'px ' + fontStyle;
+        var text = game.add.text(xLoc, yLoc, content, {
+            font: font,
+            fill: color,
+            align: alignment,
+            stroke: borderColor,
+            strokeThickness: borderWidth,
+        });
+
+        text.anchor.setTo(anchorX, anchorY);
+        text.fixedToCamera = true
+        return text;
+    },
 
 
 
