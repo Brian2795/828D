@@ -561,7 +561,7 @@ var playState = {
 
                 // preprocess the dialogues
                 console.log(this.texts)
-                tx0 = this.texts[0] + this.jStat.mean(this.measurementList).toFixed(2).toString();
+                tx0 = this.texts[0] + jStat.mean(this.measurementList).toFixed(2).toString();
                 this.texts[0] = tx0;
                 tx1 = this.texts[1] + this.populationMean.toString();
                 this.texts[1] = tx1;
