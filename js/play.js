@@ -215,27 +215,10 @@ var playState = {
         this.createText(xLoc+8,yLoc+66,game.date.toDateString(),20,'left',0);   // date
     },
 
-    initObjectiveDisplay: function(){
-        // date
-        this.objTextBase = game.add.text(18, 150, "objective: ", {
-            font: '20px Arial',
-            fill: '000000',
-            align: 'left',
-        });
-        this.objTextBase.stroke = "#ffffff";
-        this.objTextBase.strokeThickness = 3;
-        this.objTextBase.anchor.setTo(0, 0.5);
-        this.objTextBase.fixedToCamera = true;
 
-        this.objText = game.add.text(110, 150, "Walk to the supervisor", {
-            font: '20px Arial',
-            fill: '000000',
-            align: 'left',
-        });
-        this.objText.stroke = "#ffffff";
-        this.objText.strokeThickness = 3;
-        this.objText.anchor.setTo(0, 0.5);
-        this.objText.fixedToCamera = true;
+    initObjectiveDisplay: function(){
+        this.objTextBase = this.createText(18,150,'Objective: ',20,'left',0);
+        this.objText = this.createText(110,150,'Walk to the supervisor',20,'left',0);
     },
 
 
@@ -252,13 +235,13 @@ var playState = {
 
 
     initStatsDisplay: function( xLoc=1150, yLoc=600 ) {
-        this.createText(xLoc, yLoc, '-95% Confidence Interval-');
-        this.confIntervalText = this.createText(xLoc, yLoc+25, '[n/a, n/a]');
-        this.confInterval = new ConfidenceInterval(this.population, xLoc, yLoc+50);
+        this.createText(xLoc, yLoc, '95% Confidence Interval');
+        this.intervalText = this.createText(xLoc, yLoc+25, '[n/a, n/a]');
+        this.confInterval = new ConfidenceInterval(this.population, xLoc, yLoc+45);
         
         // this.confidenceIntervalText = this.createText(xLoc, yLoc+25, "[Not yet available]");
-        this.meanText = this.createText(xLoc, yLoc+60, 'Sample µ - n/a');
-        this.stDevText = this.createText(xLoc, yLoc+85, 'Sample σ - n/a');
+        this.meanText = this.createText(xLoc, yLoc+70, 'Sample µ - n/a');
+        this.stDevText = this.createText(xLoc, yLoc+95, 'Sample σ - n/a');
         
     },
 
@@ -272,7 +255,6 @@ var playState = {
             align: alignment,
             stroke: borderColor,
             strokeThickness: borderWidth,
-
         });
 
         text.anchor.setTo(anchorX, anchorY);
@@ -315,10 +297,14 @@ var playState = {
             this.measurementList.push(sampleValue)
             this.scoreText = 'Score: ' + this.measurementList.toString();
 
-            if (this.measurementList.length >= 2) {
+            if (this.measurementList.length >= 3) {
+                var interval = this.confInterval.computeInterval(this.measurementList);
+                this.intervalText.setText('[' + interval[0] + ', ' + interval[1] + ']');
                 this.confInterval.setInterval(this.measurementList);
                 var stDev = jStat.stdev(this.measurementList,true);
                 this.stDevText.setText("Sample σ: "+stDev.toFixed(2));
+                
+
             } else if (this.measurementList.length == 1) {
                 var mean = jStat.mean(this.measurementList);
                 this.meanText.setText("Sample µ: "+mean.toFixed(2));
