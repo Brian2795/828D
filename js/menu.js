@@ -46,7 +46,15 @@ var menuState = {
         }*/
 	},
 
-
+	roundToXDigits: function(value, digits) {
+        if(!digits){
+            digits = 2;
+        }
+        value = value * Math.pow(10, digits);
+        value = Math.round(value);
+        value = value / Math.pow(10, digits);
+        return value;
+    },
     initNumDisplay: function(){
         // date
         
@@ -61,7 +69,7 @@ var menuState = {
         this.objTextBase.fixedToCamera = true;
 
 
-        this.objText = game.add.text(560, 503, game.totalReputation, {
+        this.objText = game.add.text(560 , 503, this.roundToXDigits( game.totalReputation, 2), {
             font: '30px Arial',
             fill: '000000',
             align: 'left',
