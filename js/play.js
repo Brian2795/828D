@@ -66,11 +66,11 @@ var playState = {
                         2:["Hmmm you proved the statistical significance!","We can finally publish the paper!", ""]
                     }};
 
-        this.objectives = {0: {2: "collect 5 samples to compute a trial mean.\ncome back to me when you have enough samples.", 4: "collect enough samples to compute an accurate mean.\ncome back to me when you have enough samples."},
-                            1: {2:"collect 5 samples to compute a trial uncertainty.\ncome back to me when you have enough samples.", 4:"collect enough samples so that {0} can be within 1 uncertainty.\ncome back to me when you have enough samples."},
-                            2: {2:"collect 5 samples to compute a population mean.\ncome back to me when you have enough samples.", 4:"collect enough samples so that your sample uncertainty is\n3 times greater than your population uncertainty.\ncome back to me when you have enough samples."} ,
-                            3: {2:"collect 5 samples to examine the behavior of confidence internval.\ncome back to me when you have enough samples." , 4:"collect enough samples so that C.I intervals < sample stdev.\ncome back to me when you have enough samples."},
-                            4: {2:"collect enough samples so that {0} value is \nsignificantly different from the population mean.\ncome back to me when you have enough samples."} }
+        this.objectives = {0: {2: "collect 5 samples to compute a trial mean.\ncome back to me when you have enough samples.", 4: "collect enough samples to compute an accurate mean.\ncome back to me when you have enough samples.", 6:"go back to lab"},
+                            1: {2:"collect 5 samples to compute a trial uncertainty.\ncome back to me when you have enough samples.", 4:"collect enough samples so that {0} can be within 1 uncertainty.\ncome back to me when you have enough samples.", 6:"go back to lab"},
+                            2: {2:"collect 5 samples to compute a population mean.\ncome back to me when you have enough samples.", 4:"collect enough samples so that your sample uncertainty is\n3 times greater than your population uncertainty.\ncome back to me when you have enough samples.", 6:"go back to lab"} ,
+                            3: {2:"collect 5 samples to examine the behavior of confidence internval.\ncome back to me when you have enough samples." , 4:"collect enough samples so that C.I intervals < sample stdev.\ncome back to me when you have enough samples.", 6:"go back to lab"},
+                            4: {2:"collect enough samples so that {0} value is \nsignificantly different from the population mean.\ncome back to me when you have enough samples.", 4:"go back to lab"} }
     },
 
 
@@ -391,8 +391,8 @@ var playState = {
     computeConfidenceInterval: function() {
         var mean = jStat.mean(this.measurementList);
         var confInt = jStat.tci(mean, 0.05, this.measurementList);
-        confInt[0] = this.roundToXDigits(this.confInt[0], 2);
-        confInt[1] = this.roundToXDigits(this.confInt[1], 2);
+        confInt[0] = this.roundToXDigits(confInt[0], 2);
+        confInt[1] = this.roundToXDigits(confInt[1], 2);
         return confInt;
     },
 
@@ -635,6 +635,7 @@ var playState = {
                 if(this.texts.length == 0){
                     game.paused = false;
                     this.phase = this.phase + 1;
+                    this.objText.setText( this.objectives[questNum][this.phase]  )
                     this.updateGameQuestNum();
 
                 }
@@ -729,6 +730,7 @@ var playState = {
                 if(this.texts.length == 0){
                     game.paused = false;
                     this.phase = this.phase + 1;
+                    this.objText.setText( this.objectives[questNum][this.phase]  )
                     this.updateGameQuestNum();
 
                 }
@@ -822,6 +824,7 @@ var playState = {
                 if(this.texts.length == 0){
                     game.paused = false;
                     this.phase = this.phase + 1;
+                    this.objText.setText( this.objectives[questNum][this.phase]  )
                     this.updateGameQuestNum();
 
                 }
@@ -883,19 +886,25 @@ var playState = {
 
         if (this.phase == 4){
             this.closePopupDialogue();
-            confInt = this.computeConfidenceInterval();
-            width = confInt[1] - confInt[0];
-            sstd = jStat.stdev(this.measurementList, true);
-            if((this.measurementList.length >= 5) && (sstd > width)  ){
+            
+            if(this.measurementList.length >= 5){ 
+                
+                confInt = this.computeConfidenceInterval();
+                width = confInt[1] - confInt[0];
+                sstd = jStat.stdev(this.measurementList, true); 
+
+                if (sstd > width){
+                    deltaReputation = 2
+                    game.totalReputation = Math.min(game.maxReputation, game.totalReputation + deltaReputation)
+                    console.log("reputation gained: " +  deltaReputation)
+
+                    this.phase = this.phase + 1 
+                }  
 
                 // preprocess the dialogues
 
 
-                deltaReputation = 2
-                game.totalReputation = Math.min(game.maxReputation, game.totalReputation + deltaReputation)
-                console.log("reputation gained: " +  deltaReputation)
-
-                this.phase = this.phase + 1 
+                
                 
             }
             
@@ -911,6 +920,7 @@ var playState = {
                 if(this.texts.length == 0){
                     game.paused = false;
                     this.phase = this.phase + 1;
+                    this.objText.setText( this.objectives[questNum][this.phase]  )
                     this.updateGameQuestNum();
 
                 }
@@ -976,6 +986,7 @@ var playState = {
                 if(this.texts.length == 0){
                     game.paused = false;
                     this.phase = this.phase + 1;
+                    this.objText.setText( this.objectives[questNum][this.phase]  )
                     this.updateGameQuestNum();
                 }
             }
