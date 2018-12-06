@@ -71,9 +71,6 @@ ConfidenceInterval.prototype = {
    		
    		this.intervalColor = 'rgba(' + newColor[0] + ',' + newColor[1] + ',' 
    			+ newColor[2] + ',1)';
-		console.log(newColor);
-   		console.log(this.intervalColor);
-
    	},
 }
 

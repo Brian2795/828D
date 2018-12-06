@@ -316,16 +316,15 @@ var playState = {
 
             if (this.measurementList.length >= 3) {
                 var interval = this.confInterval.computeInterval(this.measurementList);
+                var stDev = jStat.stdev(this.measurementList,true);
+                var mean = jStat.mean(this.measurementList);
                 this.intervalText.setText('[' + interval[0] + ', ' + interval[1] + ']');
                 this.confInterval.setInterval(this.measurementList);
-                var stDev = jStat.stdev(this.measurementList,true);
-                this.stDevText.setText("Sample σ: "+stDev.toFixed(2));
-                
-
-            }
-            if (this.measurementList.length >= 1) { // fixed
+                this.stDevText.setText("Sample σ: " + stDev.toFixed(2));
+                this.meanText.setText("Sample µ: " + mean.toFixed(2));
+            }else if (this.measurementList.length == 1) {
                 var mean = jStat.mean(this.measurementList);
-                this.meanText.setText("Sample µ: "+mean.toFixed(2));
+                this.meanText.setText("Sample µ: " + mean.toFixed(2));
                 this.confInterval.setNlVals(sampleValue);
             } 
             
