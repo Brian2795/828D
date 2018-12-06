@@ -12,7 +12,9 @@ var menuState = {
 			this.genProjects();
 			this.genGrants();
 			game.started = true;
-		}
+		}	
+
+		
 	},
 
 
@@ -23,6 +25,7 @@ var menuState = {
 		// this.getLevelResult();
 		this.initPopupState();
 		this.addTutorialLink();
+		
 
 
 		// Should put implement this logic in init() as a trigger on the input value
@@ -42,6 +45,40 @@ var menuState = {
             reputationChange: deltaReputation
         }*/
 	},
+
+	roundToXDigits: function(value, digits) {
+        if(!digits){
+            digits = 2;
+        }
+        value = value * Math.pow(10, digits);
+        value = Math.round(value);
+        value = value / Math.pow(10, digits);
+        return value;
+    },
+    initNumDisplay: function(){
+        // date
+        
+        this.objTextBase = game.add.text(530, 503, game.totalFunding, {
+            font: '30px Arial',
+            fill: '000000',
+            align: 'left',
+        });
+        this.objTextBase.stroke = "#ffffff";
+        this.objTextBase.strokeThickness = 3;
+        this.objTextBase.anchor.setTo(0, 0.5);
+        this.objTextBase.fixedToCamera = true;
+
+        console.log(this.roundToXDigits( game.totalReputation, 2))
+        this.objText = game.add.text(255 , 503, this.roundToXDigits( game.totalReputation, 2), {
+            font: '30px Arial',
+            fill: '000000',
+            align: 'left',
+        });
+        this.objText.stroke = "#ffffff";
+        this.objText.strokeThickness = 3;
+        this.objText.anchor.setTo(0, 0.5);
+        this.objText.fixedToCamera = true;
+    },
 
 
 	update: function() {
@@ -75,6 +112,7 @@ var menuState = {
 		this.addTalkingHead();
 		this.initQuote(150, 550);
 		this.initStats();
+		this.initNumDisplay();
 	},
 
 
@@ -122,6 +160,7 @@ var menuState = {
 	toggleGrantsMissions: function() {
 		console.log(this.currentOptionState);
 		this.menuGroup.removeAll(/* Destroy */true, /* Silent */false, /* destroyTexture */false);
+
 		this.optionCount = 1;
 		if (this.currentOptionState === this.optionStateEnum.GRANTS) {
 			this.addProjectList();
@@ -131,6 +170,7 @@ var menuState = {
 		
 		this.initPopupState(); 	// reinitialize popups for visual depth priority
 		// console.log(this.grantsMissionsButton);
+		//this.initNumDisplay();
 	},
 
 
