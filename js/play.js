@@ -3,6 +3,7 @@ var playState = {
         this.environment = project.environment;
         this.population = project.population;
         this.projectTitle = project.title;
+        this.projectExposure = project.exposure;
 
         this.envKey = this.environment.key;
         this.envTilemap = this.environment.tilemap;
@@ -65,11 +66,11 @@ var playState = {
                         2:["Hmmm you proved the statistical significance!","We can finally publish the paper!", ""]
                     }};
 
-        this.objectives = {0: {2: "collect 5 samples to compute a trial mean.", 4: "collect enough samples to compute an accurate mean"},
-                            1: {2:"collect 5 samples to compute a trial uncertainty.", 4:"collect enough samples so that {0} can be within 1 uncertainty."},
-                            2: {2:"collect 5 samples to compute a population mean.", 4:"collect enough samples so that your sample uncertainty is\n3 times greater than your population uncertainty."} ,
-                            3: {2:"collect 5 samples to examine the behavior of confidence internval." , 4:"collect enough samples so that C.I intervals < sample stdev."},
-                            4: {2:"collect enough samples so that {0} value is \nsignificantly different from the population mean."} }
+        this.objectives = {0: {2: "collect 5 samples to compute a trial mean.\ncome back to me when you have enough samples.", 4: "collect enough samples to compute an accurate mean.\ncome back to me when you have enough samples."},
+                            1: {2:"collect 5 samples to compute a trial uncertainty.\ncome back to me when you have enough samples.", 4:"collect enough samples so that {0} can be within 1 uncertainty.\ncome back to me when you have enough samples."},
+                            2: {2:"collect 5 samples to compute a population mean.\ncome back to me when you have enough samples.", 4:"collect enough samples so that your sample uncertainty is\n3 times greater than your population uncertainty.\ncome back to me when you have enough samples."} ,
+                            3: {2:"collect 5 samples to examine the behavior of confidence internval.\ncome back to me when you have enough samples." , 4:"collect enough samples so that C.I intervals < sample stdev.\ncome back to me when you have enough samples."},
+                            4: {2:"collect enough samples so that {0} value is \nsignificantly different from the population mean.\ncome back to me when you have enough samples."} }
     },
 
 
@@ -214,9 +215,29 @@ var playState = {
     },
 
 
-    initObjectiveDisplay: function( yLoc=144 ){
-        this.createText(18,yLoc,'Objective: ',20,'left',0);
-        this.objText = this.createText(110,yLoc,'Walk to the supervisor',20,'left',0);
+    initObjectiveDisplay: function(){
+        // date
+        this.objTextBase = game.add.text(18, 180, "objective: ", {
+            font: '20px Arial',
+            fill: '000000',
+            align: 'left',
+        });
+        this.objTextBase.stroke = "#ffffff";
+        this.objTextBase.strokeThickness = 3;
+        this.objTextBase.anchor.setTo(0, 0.5);
+        this.objTextBase.fixedToCamera = true;
+
+
+        this.objText = game.add.text(110, 180, "Walk to the supervisor", {
+            font: '20px Arial',
+            fill: '000000',
+            align: 'left',
+        });
+        this.objText.stroke = "#ffffff";
+        this.objText.strokeThickness = 3;
+        this.objText.anchor.setTo(0, 0.5);
+        this.objText.fixedToCamera = true;
+
     },
 
 
@@ -301,7 +322,8 @@ var playState = {
                 this.stDevText.setText("Sample σ: "+stDev.toFixed(2));
                 
 
-            } else if (this.measurementList.length == 1) {
+            }
+            if (this.measurementList.length >= 1) { // fixed
                 var mean = jStat.mean(this.measurementList);
                 this.meanText.setText("Sample µ: "+mean.toFixed(2));
                 this.confInterval.setNlVals(sampleValue);
@@ -323,9 +345,13 @@ var playState = {
 
     clickReturnButton: function() {
         var deltaReputation = 0;
+        var deltaReputationWithExposure = 0;
+        // (0->0.2), (100->3)
+        var exposureMultiplier = this.projectExposure*0.028+0.2;
         if (this.measurementList.length > 0){
             deltaReputation = 2 - Math.min(4, Math.abs(  (jStat.mean(this.measurementList) - this.populationMean)/this.populationStdv));
-            game.totalReputation = Math.min(game.maxReputation, game.totalReputation + deltaReputation)
+            deltaReputationWithExposure = exposureMultiplier * deltaReputation;
+            game.totalReputation = Math.min(game.maxReputation, game.totalReputation + deltaReputationWithExposure)
         }
 
         var performance="N/A";
@@ -340,11 +366,13 @@ var playState = {
         }
         
         console.log("reputation gained: " +  deltaReputation)
+        
         game.levelResult = {
             popMean: this.populationMean,
             popStDev: this.populationStdv,
             sampleMean: jStat.mean(this.measurementList),
             reputationChange: deltaReputation,
+            reputationChangeWithMultiplier: deltaReputation*exposureMultiplier,
             grade: performance,
             hasCollectedAtLeastOneSample: this.measurementList.length > 0
         }
@@ -927,7 +955,7 @@ var playState = {
 
             if(this.measurementList.length >= 5 && (  (mmean + width/2) < this.questVar)){
 
-                // preprocess the dialogues
+                // preprocess the dialogues//
                 console.log(this.texts)
                 this.phase = this.phase + 1 
                 deltaReputation = 2

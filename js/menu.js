@@ -7,14 +7,33 @@ var menuState = {
 			MISSIONS: 2
 		};
 		this.currentOptionState = this.optionStateEnum.MISSIONS;
-		
+		this.EmotionEnum = {
+			HAPPY: 1,
+			OKAY: 2,
+			ANGRY: 3,
+		};
+		this.currentEmotion = this.computeEmotion(game.totalReputation, game.totalFunding);
+
 		if(!game.started) { 
 			this.genProjects();
 			this.genGrants();
 			game.started = true;
-		}
 
-		
+		}	
+	},
+
+	computeEmotion: function(reputation, funding) {
+		if (funding < 10000) {
+			return this.EmotionEnum.ANGRY;
+		} else {
+			if (reputation <= 30) {
+				return this.EmotionEnum.ANGRY;
+			} else if (reputation > 30 && reputation <= 60) {
+				return this.EmotionEnum.OKAY;
+			} else {
+				return this.EmotionEnum.HAPPY;
+			}
+		}
 	},
 
 
@@ -244,7 +263,7 @@ var menuState = {
 		var popMean = levelResult.popMean;
 		var sampleMean = levelResult.sampleMean;
 		var popStDev = levelResult.popStDev;
-		var repChange = levelResult.reputationChange;
+		var repChange = levelResult.reputationChangeWithMultiplier;
 		var hasCollectedAtLeastOneSample = levelResult.hasCollectedAtLeastOneSample;
 		var summary;
 		if (hasCollectedAtLeastOneSample) {
@@ -340,7 +359,7 @@ var menuState = {
 		var quoteText = game.add.text(
 			quoteX,
 			quoteY,
-			"\"Keep it up! Collect high quality data to improve\nour reputation.\"", 
+			"\""+game.tipQuotes[Math.floor(Math.random()*game.tipQuotes.length)]+"\"", 
 			style.quote.default);
 	},
 
@@ -375,10 +394,20 @@ var menuState = {
 
 
 	addTalkingHead: function() {
+		this.currentEmotion = this.computeEmotion(game.totalReputation, game.totalFunding);
 		talkingHead = this.game.add.sprite(300, 80, 'talking-head');
 		talkingHead.frame = 3;
-		talkingHead.animations.add('animate', Array.from({length: 83}, (v, k) => k), 10, true);
-		talkingHead.animations.play('animate');
+		talkingHead.animations.add('animateHappy', Array.from({length: 25}, (v, k) => k+5), 10, true);
+		talkingHead.animations.add('animateOkay', Array.from({length: 20}, (v, k) => k+40), 10, true);
+		talkingHead.animations.add('animateAngry', Array.from({length: 23}, (v, k) => k+60), 10, true);
+		if (this.currentEmotion === this.EmotionEnum.HAPPY) {
+			talkingHead.animations.play('animateHappy');
+		} else if (this.currentEmotion === this.EmotionEnum.OKAY) {
+			talkingHead.animations.play('animateOkay');
+		} else if (this.currentEmotion === this.EmotionEnum.ANGRY) {
+			talkingHead.animations.play('animateAngry');
+		}
+		
 	},
 
 
