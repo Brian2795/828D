@@ -327,27 +327,10 @@ var menuState = {
 
 
     initNumDisplay: function(){
-    	// this.createText(530,503,game.totalFunding, 30, 'left',)
-        this.objTextBase = game.add.text(530, 503, game.totalFunding, {
-            font: '30px Arial',
-            fill: '000000',
-            align: 'left',
-        });
-        this.objTextBase.stroke = "#ffffff";
-        this.objTextBase.strokeThickness = 3;
-        this.objTextBase.anchor.setTo(0, 0.5);
-        //this.objTextBase.fixedToCamera = true;
-
-        console.log(this.roundToXDigits( game.totalReputation, 2))
-        this.objText = game.add.text(255 , 503, this.roundToXDigits( game.totalReputation, 2), {
-            font: '30px Arial',
-            fill: '000000',
-            align: 'left',
-        });
-        this.objText.stroke = "#ffffff";
-        this.objText.strokeThickness = 3;
-        this.objText.anchor.setTo(0, 0.5);
-        //this.objText.fixedToCamera = true;
+    	var totalRep = this.roundToXDigits( game.totalReputation, 2);
+    	this.createText(270, 503, totalRep);
+    	this.createText(570, 503, game.totalFunding);
+    	
     },
 
 
@@ -484,7 +467,7 @@ var menuState = {
 	},
 
 
-    createText: function(xLoc, yLoc, content, fontSize=20, alignment='right', anchorX=0.5, anchorY=0.5, 
+    createText: function(xLoc, yLoc, content, fontSize=30, alignment='left', anchorX=0.5, anchorY=0.5, 
         fontStyle='Arial', color='000000', borderColor='#ffffff', borderWidth=3 ) {
         var font = String(fontSize) + 'px ' + fontStyle;
         var text = game.add.text(xLoc, yLoc, content, {
