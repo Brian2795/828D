@@ -17,12 +17,12 @@ function ConfidenceInterval( population, xLoc, yLoc, lineWidth=240, lineHeight=4
 ConfidenceInterval.prototype = {
 	constructor: ConfidenceInterval,
 
-	computeInterval: function( values ) {
+	computeInterval: function( values, decimals=2 ) {
         var mean = jStat.mean(values);
         var interval = jStat.tci(mean, 0.05, values);
         interval[0] = Math.round(interval[0] * 100) / 100;
         interval[1] = Math.round(interval[1] * 100) / 100;
-        console.log(interval)
+        console.log(interval);
         return interval;
     },
 
@@ -36,7 +36,6 @@ ConfidenceInterval.prototype = {
    	 	var width = boundUpper - boundLower;
    	 	var ratio = (val-this.minVal) / (this.maxVal-this.minVal);
    	 	var valLoc = boundLower + ratio*width;
-   	 	console.log(boundLower, boundUpper, ratio);
    		return valLoc;
    	},
 
@@ -58,7 +57,6 @@ ConfidenceInterval.prototype = {
    		var interval = this.computeInterval(values);
    		var locLower = this.getLocOfValue(interval[0]);
    		var locUpper = this.getLocOfValue(interval[1]);
-   		console.log([locLower,locUpper]);
    		this.xLocInterval = locLower;
    		this.interval.width = locUpper - locLower;; 
    	},

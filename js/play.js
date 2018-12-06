@@ -112,9 +112,6 @@ var playState = {
         this.samplesText.setText(this.genSamplesText());
         game.debug.geom(this.confInterval.numberLine, this.confInterval.numberLineColor);
         game.debug.geom(this.confInterval.interval, this.confInterval.intervalColor);
-
-        // this.rect.anchor.setTo(0.5, 0.5);
-        // this.rect.setScrollFactor(0);
     },
 
 
@@ -137,11 +134,9 @@ var playState = {
     initMeta: function() {
         this.initMenu();
         this.initProjectDetailsDisplay();
+        this.initObjectiveDisplay();
         this.initFundingDisplay();
         this.initSampleDataDisplay();
-
-        this.initObjectiveDisplay();
-
         this.initStatsDisplay();
 
         this.roundSpend = 0;
@@ -232,7 +227,6 @@ var playState = {
         this.objTextBase.anchor.setTo(0, 0.5);
         this.objTextBase.fixedToCamera = true;
 
-
         this.objText = game.add.text(110, 150, "Walk to the supervisor", {
             font: '20px Arial',
             fill: '000000',
@@ -258,24 +252,28 @@ var playState = {
 
 
     initStatsDisplay: function( xLoc=1150, yLoc=600 ) {
-        this.createText(xLoc, yLoc, "95% Confidence Interval");
-        this.confidenceIntervalText = this.createText(xLoc, yLoc+25, "[Not yet available]");
-        this.meanText = this.createText(xLoc, yLoc+50, "Sample mean: [N/A]");
-        this.stDevText = this.createText(xLoc, yLoc+75, 'Sample StDev: [N/A]');
-        this.confInterval = new ConfidenceInterval(this.population, xLoc, yLoc+100);
+        this.createText(xLoc, yLoc, '-95% Confidence Interval-');
+        this.confIntervalText = this.createText(xLoc, yLoc+25, '[n/a, n/a]');
+        this.confInterval = new ConfidenceInterval(this.population, xLoc, yLoc+50);
+        
+        // this.confidenceIntervalText = this.createText(xLoc, yLoc+25, "[Not yet available]");
+        this.meanText = this.createText(xLoc, yLoc+60, 'Sample µ - n/a');
+        this.stDevText = this.createText(xLoc, yLoc+85, 'Sample σ - n/a');
+        
     },
 
 
-    createText: function(xLoc, yLoc, content, fontSize=20, alignment='right', anchorX=0.5, anchorY=0.5, fontStyle='Arial', color='000000' ) {
+    createText: function(xLoc, yLoc, content, fontSize=20, alignment='right', anchorX=0.5, anchorY=0.5, 
+        fontStyle='Arial', color='000000', borderColor='#ffffff', borderWidth=3 ) {
         var font = String(fontSize) + 'px ' + fontStyle;
         var text = game.add.text(xLoc, yLoc, content, {
             font: font,
             fill: color,
             align: alignment,
+            stroke: borderColor,
+            strokeThickness: borderWidth,
 
         });
-        text.stroke = "#ffffff";
-        text.strokeThickness = 3;
 
         text.anchor.setTo(anchorX, anchorY);
         text.fixedToCamera = true
@@ -298,19 +296,8 @@ var playState = {
     },
 
 
-    computeConfidenceInterval: function() {
-        var mean = jStat.mean(this.measurementList);
-        var confInt = jStat.tci(mean, 0.05, this.measurementList);
-        confInt[0] = this.roundToXDigits(confInt[0],2)
-        confInt[1] = this.roundToXDigits(confInt[1],2)
-        return confInt;
-        //console.log(this.measurementList);
-        //console.log(confInt);
-    },
-
-
     genSamples: function(totSamples) {
-        // create samples.
+        // create samples
         for (var i = 0; i < totSamples; i++) {
             locX = game.width * Math.random();
             locY = game.height * Math.random();
@@ -327,24 +314,17 @@ var playState = {
             sampleValue = this.genDataValue();
             this.measurementList.push(sampleValue)
             this.scoreText = 'Score: ' + this.measurementList.toString();
-            // this.openPopupWindow(this.genPopupText(sampleValue));
-            if (this.measurementList.length > 4) {
-                var confInt = this.computeConfidenceInterval();
-                var width = confInt[1] - confInt[0];
-                this.confidenceIntervalText.setText(confInt.toString()+" - Width: "+width.toFixed(2));
-                
-            }
-            if (this.measurementList.length > 2) {
+
+            if (this.measurementList.length >= 2) {
                 this.confInterval.setInterval(this.measurementList);
-                var mean = jStat.mean(this.measurementList);
                 var stDev = jStat.stdev(this.measurementList,true);
-                this.meanText.setText("Sample µ: "+mean.toFixed(2));
                 this.stDevText.setText("Sample σ: "+stDev.toFixed(2));
-            }
-            
-            if (this.measurementList.length == 1) {
+            } else if (this.measurementList.length == 1) {
+                var mean = jStat.mean(this.measurementList);
+                this.meanText.setText("Sample µ: "+mean.toFixed(2));
                 this.confInterval.setNlVals(sampleValue);
-            }
+            } 
+            
 
             this.genSamples(1); // replenishing samples. 
 
@@ -356,7 +336,7 @@ var playState = {
 
     genDataValue: function() {
         var val = jStat.normal.sample(this.populationMean,this.populationStdv);
-        return Math.round(val * 100) / 100;
+        return this.roundToXDigits(val,2);
     },
 
 
@@ -394,6 +374,17 @@ var playState = {
 
     clickSettingsButton: function() {
         console.log("Settings button was clicked");
+    },
+
+
+    computeConfidenceInterval: function() {
+        var mean = jStat.mean(this.measurementList);
+        var confInt = jStat.tci(mean, 0.05, this.measurementList);
+        confInt[0] = this.roundToXDigits(this.confInt[0], 2);
+        confInt[1] = this.roundToXDigits(this.confInt[1], 2);
+        return confInt;
+        //console.log(this.measurementList);
+        console.log(confInt);
     },
 
 
@@ -584,7 +575,7 @@ var playState = {
 
                 // preprocess the dialogues
                 console.log(this.texts)
-                tx0 = this.texts[0] + this.roundToXDigits(jStat.mean(this.measurementList),2).toString();
+                tx0 = this.texts[0] + this.jStat.mean(this.measurementList).toFixed(2).toString();
                 this.texts[0] = tx0;
                 tx1 = this.texts[1] + this.populationMean.toString();
                 this.texts[1] = tx1;
