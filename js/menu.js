@@ -18,7 +18,10 @@ var menuState = {
 			this.genProjects();
 			this.genGrants();
 			game.started = true;
-		}	
+		} else {
+			game.date.setTime(game.date.getTime() + (24 * 60 * 60 * 1000));		// add a day each time player returns to menu
+		}
+
 	},
 
 

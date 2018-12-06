@@ -24,6 +24,8 @@ var playState = {
 
 
 	create: function() {
+        game.date.setTime(game.date.getTime() + (24 * 60 * 60 * 1000));     // add a day each time player goes out on mission
+
         this.initWorld();
         this.initMeta();
         this.createPlayer();
@@ -71,6 +73,7 @@ var playState = {
                             2: {2:"collect 5 samples to compute a population mean.\ncome back to me when you have enough samples.", 4:"collect enough samples so that your sample uncertainty is\n3 times greater than your population uncertainty.\ncome back to me when you have enough samples.", 6:"go back to lab"} ,
                             3: {2:"collect 5 samples to examine the behavior of confidence internval.\ncome back to me when you have enough samples." , 4:"collect enough samples so that C.I intervals < sample stdev.\ncome back to me when you have enough samples.", 6:"go back to lab"},
                             4: {2:"collect enough samples so that {0} value is \nsignificantly different from the population mean.\ncome back to me when you have enough samples.", 4:"go back to lab"} }
+    
     },
 
 
