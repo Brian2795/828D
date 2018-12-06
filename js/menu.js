@@ -22,7 +22,9 @@ var menuState = {
 			game.date.setTime(game.date.getTime() + (24 * 60 * 60 * 1000));		// add a day each time player returns to menu
 		}
 
-	},
+		this.removeOldGrants();
+
+	},	
 
 
 	create: function() {
@@ -159,7 +161,7 @@ var menuState = {
 		// Adjust game world bounds for kinetic scroll
 		game.world.setBounds(0, 0, this.game.width, 200+150 * game.grantsAvailable.length);
 		console.log("Toggled to grants.");
-		console.log(game.grantsAvailable);
+		// console.log(game.grantsAvailable);
 	},
 
 
@@ -175,7 +177,7 @@ var menuState = {
 		// Adjust game world bounds for kinetic scroll
 		game.world.setBounds(0, 0, this.game.width, 200+150*game.projectsOngoing.length);
 		console.log("Toggled to projects.");
-		console.log(game.projectsOngoing);
+		// console.log(game.projectsOngoing);
 	},
 
 
@@ -232,10 +234,28 @@ var menuState = {
 		return summary;
 	},
 
+
 	addTutorialLink: function() {
 		var tutorialText = game.add.text(50, game.world.height - 5, "Tutorial", style.navitem.default);
 		var callback = function() { game.state.start('tutorial'); };
 		this.createTextButton(tutorialText, "Tutorial", 'Tutorial', callback);
+	},
+
+
+	removeOldGrants: function() {
+		var grant = null;
+		var invalidIndices = [];
+		for (let i=0; i<game.grantsAvailable.length; i++){
+			grant = game.grantsAvailable[i];
+			if (grant.propDeadline < game.date) {
+				invalidIndices.push(i);
+			}
+		}
+
+		console.log(invalidIndices.length + ' grant(s) removed');
+		for (let j=invalidIndices.length-1; j>=0; j--) {
+			game.grantsAvailable.splice(invalidIndices[j],1);
+		}
 	},
 
 
