@@ -18,23 +18,10 @@ var menuState = {
 			this.genProjects();
 			this.genGrants();
 			game.started = true;
-
-		}	
-	},
-
-
-	computeEmotion: function(reputation, funding) {
-		if (funding < 10000) {
-			return this.EmotionEnum.ANGRY;
 		} else {
-			if (reputation <= 30) {
-				return this.EmotionEnum.ANGRY;
-			} else if (reputation > 30 && reputation <= 60) {
-				return this.EmotionEnum.OKAY;
-			} else {
-				return this.EmotionEnum.HAPPY;
-			}
+			game.date.setTime(game.date.getTime() + (24 * 60 * 60 * 1000));		// add a day each time player returns to menu
 		}
+
 	},
 
 
@@ -65,40 +52,6 @@ var menuState = {
             reputationChange: deltaReputation
         }*/
 	},
-
-	roundToXDigits: function(value, digits) {
-        if(!digits){
-            digits = 2;
-        }
-        value = value * Math.pow(10, digits);
-        value = Math.round(value);
-        value = value / Math.pow(10, digits);
-        return value;
-    },
-    initNumDisplay: function(){
-        // date
-        
-        this.objTextBase = game.add.text(530, 503, game.totalFunding, {
-            font: '30px Arial',
-            fill: '000000',
-            align: 'left',
-        });
-        this.objTextBase.stroke = "#ffffff";
-        this.objTextBase.strokeThickness = 3;
-        this.objTextBase.anchor.setTo(0, 0.5);
-        //this.objTextBase.fixedToCamera = true;
-
-        console.log(this.roundToXDigits( game.totalReputation, 2))
-        this.objText = game.add.text(255 , 503, this.roundToXDigits( game.totalReputation, 2), {
-            font: '30px Arial',
-            fill: '000000',
-            align: 'left',
-        });
-        this.objText.stroke = "#ffffff";
-        this.objText.strokeThickness = 3;
-        this.objText.anchor.setTo(0, 0.5);
-        //this.objText.fixedToCamera = true;
-    },
 
 
 	update: function() {
@@ -360,7 +313,7 @@ var menuState = {
 		var quoteText = game.add.text(
 			quoteX,
 			quoteY,
-			"\""+game.tipQuotes[Math.floor(Math.random()*game.tipQuotes.length)]+"\"", 
+			"\"Keep it up! Collect high quality data to improve\nour reputation.\"", 
 			style.quote.default);
 	},
 
@@ -371,6 +324,32 @@ var menuState = {
 		var fundingPercent = 100 * game.totalFunding / game.maxFunding;
 		this.addHealthBar(450, 500, "Funding", fundingPercent);
 	},
+
+
+    initNumDisplay: function(){
+        // date
+        
+        this.objTextBase = game.add.text(530, 503, game.totalFunding, {
+            font: '30px Arial',
+            fill: '000000',
+            align: 'left',
+        });
+        this.objTextBase.stroke = "#ffffff";
+        this.objTextBase.strokeThickness = 3;
+        this.objTextBase.anchor.setTo(0, 0.5);
+        //this.objTextBase.fixedToCamera = true;
+
+        console.log(this.roundToXDigits( game.totalReputation, 2))
+        this.objText = game.add.text(255 , 503, this.roundToXDigits( game.totalReputation, 2), {
+            font: '30px Arial',
+            fill: '000000',
+            align: 'left',
+        });
+        this.objText.stroke = "#ffffff";
+        this.objText.strokeThickness = 3;
+        this.objText.anchor.setTo(0, 0.5);
+        //this.objText.fixedToCamera = true;
+    },
 
 
 	addHealthBar: function(barX, barY, barLabel, barPercent, barWidth=250) {
@@ -408,7 +387,21 @@ var menuState = {
 		} else if (this.currentEmotion === this.EmotionEnum.ANGRY) {
 			talkingHead.animations.play('animateAngry');
 		}
-		
+	},
+
+
+	computeEmotion: function(reputation, funding) {
+		if (funding < 10000) {
+			return this.EmotionEnum.ANGRY;
+		} else {
+			if (reputation <= 30) {
+				return this.EmotionEnum.ANGRY;
+			} else if (reputation > 30 && reputation <= 60) {
+				return this.EmotionEnum.OKAY;
+			} else {
+				return this.EmotionEnum.HAPPY;
+			}
+		}
 	},
 
 
@@ -489,6 +482,16 @@ var menuState = {
 		return grant;
 	},
 
+
+	roundToXDigits: function(value, digits) {
+        if(!digits){
+            digits = 2;
+        }
+        value = value * Math.pow(10, digits);
+        value = Math.round(value);
+        value = value / Math.pow(10, digits);
+        return value;
+    },
 
 
 };

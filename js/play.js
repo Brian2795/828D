@@ -24,6 +24,8 @@ var playState = {
 
 
 	create: function() {
+        game.date.setTime(game.date.getTime() + (24 * 60 * 60 * 1000));     // add a day each time player goes out on mission
+
         this.initWorld();
         this.initMeta();
         this.createPlayer();
@@ -71,6 +73,7 @@ var playState = {
                             2: {2:"collect 5 samples to compute a population mean.\ncome back to me when you have enough samples.", 4:"collect enough samples so that your sample uncertainty is\n3 times greater than your population uncertainty.\ncome back to me when you have enough samples.", 6:"go back to lab"} ,
                             3: {2:"collect 5 samples to examine the behavior of confidence internval.\ncome back to me when you have enough samples." , 4:"collect enough samples so that C.I intervals < sample stdev.\ncome back to me when you have enough samples.", 6:"go back to lab"},
                             4: {2:"collect enough samples so that {0} value is \nsignificantly different from the population mean.\ncome back to me when you have enough samples.", 4:"go back to lab"} }
+    
     },
 
 
@@ -215,29 +218,9 @@ var playState = {
     },
 
 
-    initObjectiveDisplay: function(){
-        // date
-        this.objTextBase = game.add.text(18, 180, "objective: ", {
-            font: '20px Arial',
-            fill: '000000',
-            align: 'left',
-        });
-        this.objTextBase.stroke = "#ffffff";
-        this.objTextBase.strokeThickness = 3;
-        this.objTextBase.anchor.setTo(0, 0.5);
-        this.objTextBase.fixedToCamera = true;
-
-
-        this.objText = game.add.text(110, 180, "Walk to the supervisor", {
-            font: '20px Arial',
-            fill: '000000',
-            align: 'left',
-        });
-        this.objText.stroke = "#ffffff";
-        this.objText.strokeThickness = 3;
-        this.objText.anchor.setTo(0, 0.5);
-        this.objText.fixedToCamera = true;
-
+    initObjectiveDisplay: function( xLoc=18, yLoc=600 ){
+        this.createText(xLoc,yLoc,'Objective(s):',22,'left',0);
+        this.objText = this.createText(xLoc+8,yLoc+24,'talk to the supervisor',20,'left',0,0);
     },
 
 
