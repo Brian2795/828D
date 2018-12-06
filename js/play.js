@@ -3,6 +3,7 @@ var playState = {
         this.environment = project.environment;
         this.population = project.population;
         this.projectTitle = project.title;
+        this.projectExposure = project.exposure;
 
         this.envKey = this.environment.key;
         this.envTilemap = this.environment.tilemap;
@@ -328,9 +329,13 @@ var playState = {
 
     clickReturnButton: function() {
         var deltaReputation = 0;
+        var deltaReputationWithExposure = 0;
+        // (0->0.2), (100->3)
+        var exposureMultiplier = this.projectExposure*0.028+0.2;
         if (this.measurementList.length > 0){
             deltaReputation = 2 - Math.min(4, Math.abs(  (jStat.mean(this.measurementList) - this.populationMean)/this.populationStdv));
-            game.totalReputation = Math.min(game.maxReputation, game.totalReputation + deltaReputation)
+            deltaReputationWithExposure = exposureMultiplier * deltaReputation;
+            game.totalReputation = Math.min(game.maxReputation, game.totalReputation + deltaReputationWithExposure)
         }
 
         var performance="N/A";
@@ -345,11 +350,13 @@ var playState = {
         }
         
         console.log("reputation gained: " +  deltaReputation)
+        
         game.levelResult = {
             popMean: this.populationMean,
             popStDev: this.populationStdv,
             sampleMean: jStat.mean(this.measurementList),
             reputationChange: deltaReputation,
+            reputationChangeWithMultiplier: deltaReputation*exposureMultiplier,
             grade: performance,
             hasCollectedAtLeastOneSample: this.measurementList.length > 0
         }

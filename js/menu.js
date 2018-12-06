@@ -262,7 +262,7 @@ var menuState = {
 		var popMean = levelResult.popMean;
 		var sampleMean = levelResult.sampleMean;
 		var popStDev = levelResult.popStDev;
-		var repChange = levelResult.reputationChange;
+		var repChange = levelResult.reputationChangeWithMultiplier;
 		var hasCollectedAtLeastOneSample = levelResult.hasCollectedAtLeastOneSample;
 		var summary;
 		if (hasCollectedAtLeastOneSample) {
