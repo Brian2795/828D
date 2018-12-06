@@ -17,6 +17,7 @@ game.quest = 0;
 game.projectsOngoing = [];
 game.projectsCompleted = [];
 game.projectsRejected = [];
+game.projectsFailed = [];
 game.grantsAvailable = [];
 
 // predeclaring 

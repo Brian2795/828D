@@ -23,6 +23,8 @@ var menuState = {
 		}
 
 		this.removeOldGrants();
+		this.removeOldProjects();
+
 
 	},	
 
@@ -126,6 +128,43 @@ var menuState = {
 
         //this.popupState.spsp = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
         //this.popupState.spsp.onDown.add(this.progDialogue, this);
+	},
+
+
+	removeOldGrants: function() {
+		var grant = null;
+		var invalidIndices = [];
+		for (let i=0; i<game.grantsAvailable.length; i++){
+			grant = game.grantsAvailable[i];
+			if (grant.propDeadline < game.date) {
+				invalidIndices.push(i);
+			}
+		}
+
+		console.log(invalidIndices.length + ' grant(s) removed');
+		for (let j=invalidIndices.length-1; j>=0; j--) {
+			game.grantsAvailable.splice(invalidIndices[j],1);
+		}
+	},
+
+
+	removeOldProjects: function() {
+		var project = null;
+		var invalidIndices = [];
+		for (let i=0; i<game.projectsOngoing.length; i++){
+			project = game.projectsOngoing[i];
+			if (project.deadline < game.date) {
+				invalidIndices.push(i);
+			}
+		}
+
+		console.log(invalidIndices.length + ' project(s) removed');
+		for (let j=invalidIndices.length-1; j>=0; j--) {
+			project = game.projectsOngoing.splice(invalidIndices[j],1);
+			game.projectsFailed.push() = project[0];
+		}
+		console.log('Failed Project List: ');
+		console.log(game.projectsFailed);
 	},
 
 
@@ -242,21 +281,6 @@ var menuState = {
 	},
 
 
-	removeOldGrants: function() {
-		var grant = null;
-		var invalidIndices = [];
-		for (let i=0; i<game.grantsAvailable.length; i++){
-			grant = game.grantsAvailable[i];
-			if (grant.propDeadline < game.date) {
-				invalidIndices.push(i);
-			}
-		}
-
-		console.log(invalidIndices.length + ' grant(s) removed');
-		for (let j=invalidIndices.length-1; j>=0; j--) {
-			game.grantsAvailable.splice(invalidIndices[j],1);
-		}
-	},
 
 
 /* TERTIARY HELPERS */
