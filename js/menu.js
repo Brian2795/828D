@@ -530,7 +530,7 @@ var menuState = {
         });
 
         text.anchor.setTo(anchorX, anchorY);
-        text.fixedToCamera = true
+        // text.fixedToCamera = true;
         return text;
     },
 
