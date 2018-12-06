@@ -348,6 +348,17 @@ var playState = {
             deltaReputation = 2 - Math.min(4, Math.abs(  (jStat.mean(this.measurementList) - this.populationMean)/this.populationStdv));
             game.totalReputation = Math.min(game.maxReputation, game.totalReputation + deltaReputation)
         }
+
+        var performance="N/A";
+        if (deltaReputation <= 0.5) {
+            performance = "F";
+        } else if (deltaReputation > 0.5 && deltaReputation <= 1.0) {
+            performance = "C";
+        } else if (deltaReputation > 1.0 && deltaReputation <= 1.5) {
+            performance = "B";
+        } else if (deltaReputation > 1.5) {
+            performance = "A";
+        }
         
         console.log("reputation gained: " +  deltaReputation)
         game.levelResult = {
@@ -355,6 +366,7 @@ var playState = {
             popStDev: this.populationStdv,
             sampleMean: jStat.mean(this.measurementList),
             reputationChange: deltaReputation,
+            grade: performance,
             hasCollectedAtLeastOneSample: this.measurementList.length > 0
         }
         game.state.start('menu');

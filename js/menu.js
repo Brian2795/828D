@@ -208,7 +208,7 @@ var menuState = {
 		var hasCollectedAtLeastOneSample = levelResult.hasCollectedAtLeastOneSample;
 		var summary;
 		if (hasCollectedAtLeastOneSample) {
-			summary = "Mission complete! Here's how you did: The population mean was "
+			summary = "Mission complete! \""+levelResult.grade+"\" performance."+"The population mean was "
 			+ popMean.toFixed(2)+" with " + "a standard devation of "+popStDev.toFixed(2)
 			+ ". The mean of your sample was " + sampleMean.toFixed(2) 
 			+ ". Based on your performance, you've received a reputation change of " 
