@@ -66,7 +66,7 @@ var menuState = {
         this.objTextBase.stroke = "#ffffff";
         this.objTextBase.strokeThickness = 3;
         this.objTextBase.anchor.setTo(0, 0.5);
-        this.objTextBase.fixedToCamera = true;
+        //this.objTextBase.fixedToCamera = true;
 
         console.log(this.roundToXDigits( game.totalReputation, 2))
         this.objText = game.add.text(255 , 503, this.roundToXDigits( game.totalReputation, 2), {
@@ -77,7 +77,7 @@ var menuState = {
         this.objText.stroke = "#ffffff";
         this.objText.strokeThickness = 3;
         this.objText.anchor.setTo(0, 0.5);
-        this.objText.fixedToCamera = true;
+        //this.objText.fixedToCamera = true;
     },
 
 
