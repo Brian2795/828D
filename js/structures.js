@@ -11,7 +11,6 @@ function ConfidenceInterval( population, xLoc, yLoc, lineWidth=240, lineHeight=4
 	this.numberLineColor = nlColor;
 	this.interval = new Phaser.Rectangle(this.xLocInterval,this.yLocInterval,0,intervalHeight);
 	this.intervalColor = intervalColor;
-	
 }
 
 ConfidenceInterval.prototype = {
@@ -22,7 +21,6 @@ ConfidenceInterval.prototype = {
         var interval = jStat.tci(mean, 0.05, values);
         interval[0] = Math.round(interval[0] * 100) / 100;
         interval[1] = Math.round(interval[1] * 100) / 100;
-        console.log(interval);
         return interval;
     },
 
