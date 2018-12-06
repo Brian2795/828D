@@ -93,16 +93,12 @@ var playState = {
 
         game.physics.arcade.overlap(this.player, this.samples, this.collectSample, null, this);
         game.physics.arcade.overlap(this.player, this.npcs, this.progDialogue, null, this);
-        //game.physics.arcade.overlap(this.player, this.samples, this.collectsample, null, this);
         
         this.confInterval.numberLine.x = this.confInterval.xLocNl + game.camera.x;
         this.confInterval.numberLine.y = this.confInterval.yLocNl + game.camera.y;
         
         this.confInterval.interval.x = this.confInterval.xLocInterval + game.camera.x;
         this.confInterval.interval.y = this.confInterval.yLocInterval + game.camera.y;
-
-
-
 
     },
 
@@ -329,13 +325,14 @@ var playState = {
                 var confInt = this.computeConfidenceInterval();
                 var width = confInt[1] - confInt[0];
                 this.confidenceIntervalText.setText(confInt.toString()+" - Width: "+width.toFixed(2));
-                this.confInterval.setInterval(this.measurementList);
+                
             }
             if (this.measurementList.length > 2) {
+                this.confInterval.setInterval(this.measurementList);
                 var mean = jStat.mean(this.measurementList);
                 var stDev = jStat.stdev(this.measurementList,true);
-                this.meanText.setText("Sample Mean: "+mean.toFixed(2));
-                this.stDevText.setText("Sample StDev: "+stDev.toFixed(2));
+                this.meanText.setText("Sample µ: "+mean.toFixed(2));
+                this.stDevText.setText("Sample σ: "+stDev.toFixed(2));
             }
             
             if (this.measurementList.length == 1) {

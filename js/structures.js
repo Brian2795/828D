@@ -1,4 +1,4 @@
-function ConfidenceInterval( population, xLoc, yLoc, lineWidth=240, lineHeight=4, intervalHeight=6, nlColor='rgba(0,0,0,1)', intervalColor='rgba(180,0,150,1)' ) {
+function ConfidenceInterval( population, xLoc, yLoc, lineWidth=240, lineHeight=4, intervalHeight=6, nlColor='rgba(0,0,0,1)', intervalColor='rgba(200,0,200,1)' ) {
 	this.population = population;
 	
 	this.xLocNl = xLoc - lineWidth/2;		// relative loc to camera 
@@ -9,7 +9,7 @@ function ConfidenceInterval( population, xLoc, yLoc, lineWidth=240, lineHeight=4
 
 	this.numberLine = new Phaser.Rectangle(this.xLocNl,this.yLocNl,lineWidth,lineHeight);
 	this.numberLineColor = nlColor;
-	this.interval = new Phaser.Rectangle(this.xLocInterval,this.yLocInterval,10,intervalHeight);
+	this.interval = new Phaser.Rectangle(this.xLocInterval,this.yLocInterval,0,intervalHeight);
 	this.intervalColor = intervalColor;
 	
 }
@@ -22,6 +22,7 @@ ConfidenceInterval.prototype = {
         var interval = jStat.tci(mean, 0.05, values);
         interval[0] = Math.round(interval[0] * 100) / 100;
         interval[1] = Math.round(interval[1] * 100) / 100;
+        console.log(interval)
         return interval;
     },
 
@@ -30,12 +31,12 @@ ConfidenceInterval.prototype = {
    	/* Gets the physical x locations of a value on the numberLine given the 
    	 * NL's bounding locations and min/max values 
    	 */ 
-   	 	var boundLocs = this.getNlLocs;
-   	 	var boundLower = boundLocs[0];
-   	 	var boundUpper = boundLocs[1];
+   	 	var boundLower = this.xLocNl;
+   	 	var boundUpper = this.xLocNl + this.numberLine.width;
    	 	var width = boundUpper - boundLower;
    	 	var ratio = (val-this.minVal) / (this.maxVal-this.minVal);
    	 	var valLoc = boundLower + ratio*width;
+   	 	console.log(boundLower, boundUpper, ratio);
    		return valLoc;
    	},
 
@@ -57,7 +58,8 @@ ConfidenceInterval.prototype = {
    		var interval = this.computeInterval(values);
    		var locLower = this.getLocOfValue(interval[0]);
    		var locUpper = this.getLocOfValue(interval[1]);
-   		this.interval.x = locLower;
+   		console.log([locLower,locUpper]);
+   		this.xLocInterval = locLower;
    		this.interval.width = locUpper - locLower;; 
    	},
 }
