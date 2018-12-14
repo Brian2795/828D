@@ -1,15 +1,19 @@
-function ConfidenceInterval( population, xLoc, yLoc, lineWidth=240, lineHeight=4, intervalHeight=6, nlColor='rgba(0,0,0,1)', intervalColor='rgba(200,0,200,1)' ) {
+function ConfidenceInterval( population, xLoc, yLoc, lineWidth=240, lineHeight=4, intervalHeight=6, meanVizWidth=2, meanVizHeight=8, nlColor='rgba(0,0,0,1)', intervalColor='rgba(200,0,200,1)' ) {
 	this.population = population;
 	
 	this.xLocNl = xLoc - lineWidth/2;		// relative loc to camera 
 	this.yLocNl = yLoc - lineHeight/2;		// ..assuming anchor.setTo(.5,.5)
 	this.xLocInterval = this.xLocNl;
 	this.yLocInterval = yLoc - intervalHeight/2;
+	this.xLocMean = xLoc - meanVizWidth/2;
+	this.yLocMean = yLoc - meanVizHeight/2;
 
 	this.numberLine = new Phaser.Rectangle(this.xLocNl,this.yLocNl,lineWidth,lineHeight);
 	this.numberLineColor = nlColor;
 	this.interval = new Phaser.Rectangle(this.xLocInterval,this.yLocInterval,0,intervalHeight);
 	this.intervalColor = intervalColor;
+	this.meanViz = new Phaser.Rectangle(this.xLocMean,this.yLocMean,meanVizWidth,meanVizHeight);
+	this.meanColor = nlColor;
 }
 
 ConfidenceInterval.prototype = {
@@ -55,10 +59,9 @@ ConfidenceInterval.prototype = {
    		var locLower = this.getLocOfValue(interval[0]);
    		var locUpper = this.getLocOfValue(interval[1]);
    		this.xLocInterval = locLower;
-   		this.interval.width = locUpper - locLower;; 
+   		this.interval.width = locUpper - locLower;
    		this.setIntervalColor();
    	},
-
 
    	setIntervalColor: function( negColor=[255,0,0], posColor=[100,255,100] ) {
    		var ratio = Math.min(this.interval.width / this.numberLine.width, 1);
@@ -71,6 +74,12 @@ ConfidenceInterval.prototype = {
    		
    		this.intervalColor = 'rgba(' + newColor[0] + ',' + newColor[1] + ',' 
    			+ newColor[2] + ',1)';
+   	},
+
+   	setMeanLoc: function( values, meanVizWidth=2 ) {
+   		var mean = jStat.mean(values);
+   		var xlocMean = this.getLocOfValue(mean);
+   		this.xLocMean = xlocMean - meanVizWidth/2;
    	},
 }
 

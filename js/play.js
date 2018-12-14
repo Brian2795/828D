@@ -104,6 +104,9 @@ var playState = {
         this.confInterval.interval.x = this.confInterval.xLocInterval + game.camera.x;
         this.confInterval.interval.y = this.confInterval.yLocInterval + game.camera.y;
 
+        this.confInterval.meanViz.x = this.confInterval.xLocMean + game.camera.x;
+        this.confInterval.meanViz.y = this.confInterval.yLocMean + game.camera.y;
+
     },
 
 
@@ -112,8 +115,10 @@ var playState = {
         this.spendingText.setText('($' + String(this.roundSpend) + ')');
         this.numSamplesText.setText(this.measurementList.length + ' samples');
         this.samplesText.setText(this.genSamplesText());
+
         game.debug.geom(this.confInterval.numberLine, this.confInterval.numberLineColor);
         game.debug.geom(this.confInterval.interval, this.confInterval.intervalColor);
+        game.debug.geom(this.confInterval.meanViz, this.confInterval.meanColor);
     },
 
 
@@ -238,10 +243,10 @@ var playState = {
 
     initStatsDisplay: function( xLoc=1150, yLoc=600 ) {
         this.createText(xLoc, yLoc, '95% Confidence Interval');
-        this.intervalText = this.createText(xLoc, yLoc+25, '[n/a, n/a]');
+        this.intervalText = this.createText(xLoc, yLoc+25, '[n/a, n/a]', 16);
         this.confInterval = new ConfidenceInterval(this.population, xLoc, yLoc+45);
-        this.meanText = this.createText(xLoc, yLoc+70, 'Sample µ - n/a');
-        this.stDevText = this.createText(xLoc, yLoc+95, 'Sample σ - n/a');
+        this.meanText = this.createText(xLoc, yLoc+70, 'Sample µ - n/a', 14);
+        this.stDevText = this.createText(xLoc, yLoc+95, 'Sample σ - n/a', 14);
         
     },
 
@@ -285,11 +290,14 @@ var playState = {
                 var mean = jStat.mean(this.measurementList);
                 this.intervalText.setText('[' + interval[0] + ', ' + interval[1] + ']');
                 this.confInterval.setInterval(this.measurementList);
+                this.confInterval.setMeanLoc(this.measurementList);
                 this.stDevText.setText("Sample σ: " + stDev.toFixed(2));
-                this.meanText.setText("Sample µ: " + mean.toFixed(2));
+                this.meanText.setText(mean.toFixed(2) + this.population.units);
+                // this.meanText.x = this.confInterval.xLocMean;
+                // console.log(this.meanText.x);
             }else if (this.measurementList.length == 1) {
                 var mean = jStat.mean(this.measurementList);
-                this.meanText.setText("Sample µ: " + mean.toFixed(2));
+                this.meanText.setText(mean.toFixed(2) + this.population.units);
                 this.confInterval.setNlVals(sampleValue);
             } 
             
